@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SistemaOS | Gestão para Marcenarias, Marmorarias e Serralheria</title>
+    <style>
+        :root {
+            --primary: #2d5d7b;
+            --secondary: #e67e22;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d3e53 100%);
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1200/600');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding-top: 60px;
+            transition: opacity 0.5s ease-in-out, background-image 0.5s ease-in-out;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .highlight-text {
+            color: var(--secondary);
+            display: inline-block;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+    
+        .fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+        }
+        
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes textChange {
+            0%, 24% {
+                content: "marcenaria";
+            }
+            25%, 49% {
+                content: "marmoraria";
+            }
+            50%, 74% {
+                content: "vidraçaria";
+            }
+            75%, 100% {
+                content: "serralheria";
+            }
+        }
+        
+        /* Alternativa com JavaScript se a animação CSS não funcionar bem */
+        h1 .highlight-text {
+            color: var(--secondary);
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .cta-btn:hover {
+            background-color: #d35400;
+            transform: translateY(-3px);
+        }
+        
+        .cta-btn.outline {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+        
+        .cta-btn.outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        section {
+            padding: 5rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .features {
+            background-color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            background-color: rgba(45, 93, 123, 0.1);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .testimonials {
+            background-color: #f5f7fa;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .pricing {
+            background-color: white;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .pricing-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            border: 2px solid #eee;
+        }
+        
+        .pricing-card.popular {
+            border-color: var(--secondary);
+            position: relative;
+            transform: scale(1.05);
+        }
+        
+        .pricing-card.popular::before {
+            content: "MAIS POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .features-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d3e53 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .contact-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .submit-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #d35400;
+        }
+        
+        .contact-info {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .footer-links li {
+            margin: 0 1rem;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            margin-bottom: 2rem;
+        }
+        
+        .social-links a {
+            color: white;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .copyright {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .contact-form {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Sistema<span>OS</span></div>
+            <ul class="nav-links">
+                <li><a href="#hero">Início</a></li>
+                <li><a href="#features">Funcionalidades</a></li>
+                <li><a href="#testimonials">Depoimentos</a></li>
+                <li><a href="#pricing">Planos</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+            <div class="hamburger">☰</div>
+        </nav>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Gerencie sua empresa de <span id="segment-text" class="highlight-text">marcenaria</span> com eficiência</h1>
+            <p>O SistemaOS é o software completo que automatiza seus processos, otimiza sua produção e aumenta seus lucros.</p>
+            <div>
+                <a href="#contact" class="cta-btn">Começar agora</a>
+                <a href="#features" class="cta-btn outline">Conheça as funcionalidades</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Funcionalidades desenvolvidas para o seu negócio</h2>
+                <p>Solução completa para otimizar processos e aumentar a produtividade da sua empresa</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Orçamentos Precisos</h3>
+                    <p>Calcule custos de materiais e mão de obra automaticamente para orçamentos precisos e competitivos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Controle de Estoque</h3>
+                    <p>Monitore seu inventário em tempo real, evite desperdícios e nunca fique sem materiais essenciais.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Gestão de Projetos</h3>
+                    <p>Acompanhe todas as etapas dos seus projetos, desde o orçamento até a entrega final.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Aplicativo Móvel</h3>
+                    <p>Acesse informações importantes e atualize o status dos projetos direto do canteiro de obras.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Controle Financeiro</h3>
+                    <p>Gerencie contas a pagar, receber e tenha relatórios financeiros detalhados em poucos cliques.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Gestão de Clientes</h3>
+                    <p>Mantenha histórico completo de clientes, projetos e interações para fortalecer relacionamentos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>O que nossos clientes dizem</h2>
+                <p>Empresas de diversos segmentos já transformaram seu negócio com o SistemaOS</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Desde que implementamos o SistemaOS, reduzimos em 35% o tempo de elaboração de orçamentos e praticamente eliminamos erros de cálculo. Nossa produtividade aumentou significativamente."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Carlos Silva">
+                        <div class="author-info">
+                            <h4>Carlos Silva</h4>
+                            <p>Marcenaria Silva & Filhos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "O controle de estoque do sistema nos ajudou a reduzir desperdícios e organizar melhor nossos materiais. Além disso, o suporte é excelente e sempre nos ajuda com qualquer dúvida."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Ana Oliveira">
+                        <div class="author-info">
+                            <h4>Ana Oliveira</h4>
+                            <p>Vidraçaria Cristal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Como serralheiro, eu precisava de um sistema que entendesse as particularidades do meu negócio. O SistemaOS foi perfeito, adaptando-se às necessidades específicas da minha empresa."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Roberto Gomes">
+                        <div class="author-info">
+                            <h4>Roberto Gomes</h4>
+                            <p>Serralheria Gomes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-title">
+                <h2>Escolha o plano ideal para o seu negócio</h2>
+                <p>Soluções pensadas para empresas de todos os tamanhos</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Básico</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$199<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Gestão de orçamentos</li>
+                        <li>Controle básico de estoque</li>
+                        <li>Gerenciamento de clientes</li>
+                        <li>Acesso para 2 usuários</li>
+                        <li>Suporte por e-mail</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+                <div class="pricing-card popular">
+                    <h3>Profissional</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$349<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Tudo do plano Básico</li>
+                        <li>Gestão financeira completa</li>
+                        <li>Gestão de projetos</li>
+                        <li>Aplicativo móvel</li>
+                        <li>Acesso para 5 usuários</li>
+                        <li>Suporte prioritário</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Empresarial</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$599<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Tudo do plano Profissional</li>
+                        <li>Integrações personalizadas</li>
+                        <li>Relatórios avançados</li>
+                        <li>Acesso ilimitado de usuários</li>
+                        <li>Gestor de conta dedicado</li>
+                        <li>Treinamento personalizado</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: rgb(211, 211, 211);">Transforme sua empresa hoje mesmo</h2>
+                <p style="color: rgb(190, 190, 190);">Preencha o formulário abaixo e nossa equipe entrará em contato para uma demonstração gratuita</p>
+            </div>
+            <div class="contact-form">
+                <form id="lead-form">
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" class="form-control" placeholder="Seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Empresa</label>
+                        <input type="text" id="company" class="form-control" placeholder="Nome da sua empresa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">WhatsApp</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Tipo de negócio</label>
+                        <select id="business" class="form-control" required>
+                            <option value="" disabled selected>Selecione seu tipo de negócio</option>
+                            <option value="marcenaria">Marcenaria</option>
+                            <option value="marmoraria">Marmoraria</option>
+                            <option value="vidracaria">Vidraçaria</option>
+                            <option value="serralheria">Serralheria</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Solicitar demonstração gratuita</button>
+                </form>
+                <div class="contact-info">
+                    <p>Ou entre em contato diretamente:</p>
+                    <p>contato@sistemaos.com.br | (11) 9999-9999</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="logo">Sistema<span>OS</span></div>
+            <ul class="footer-links">
+                <li><a href="#hero">Início</a></li>
+                <li><a href="#features">Funcionalidades</a></li>
+                <li><a href="#testimonials">Depoimentos</a></li>
+                <li><a href="#pricing">Planos</a></li>
+                <li><a href="#contact">Contato</a></li>
+                <li><a href="#">Política de Privacidade</a></li>
+                <li><a href="#">Termos de Uso</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">YouTube</a>
+            </div>
+            <p class="copyright">© 2025 SistemaOS. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+
+    const backgroundImages = {
+        "marcenaria": "https://images.unsplash.com/photo-1683115096447-5d01c11d3ead?q=80&w=1752&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "marmoraria": "https://img.freepik.com/fotos-gratis/tiler-trabalhando-na-renovacao-do-apartamento_23-2149278571.jpg?t=st=1745348613~exp=1745352213~hmac=819f6c5a2aef3cfacbee1f1b0bbd32c4f238dc27bd5b19a6c1f8be9b07e4ba7d&w=996",
+        "vidraçaria": "https://img.freepik.com/fotos-gratis/oficina-de-trabalho-criativo-de-artesao_23-2148970787.jpg?t=st=1745348420~exp=1745352020~hmac=6a3c1bc28667591f7c6bb223966b26110f57bae6e4ce2102cc19784bf0cf448f&w=996",
+        "serralheria": "https://img.freepik.com/fotos-gratis/dois-trabalhadores-fazendo-portoes-na-ferraria_7502-9153.jpg?t=st=1745348189~exp=1745351789~hmac=2810635916b320200812359deac087d2f92eba76e35fe1ad361e0dfe6c4c09f9&w=996"
+    };
+
+
+     // Script para alternar as palavras com animação
+     const words = ["marcenaria", "marmoraria", "vidraçaria", "serralheria"];
+    const segmentText = document.getElementById('segment-text');
+    let currentIndex = 0;
+    
+    function changeText() {
+        // Efeito de fade out
+        segmentText.classList.add('fade-out');
+        
+        // Após completar o fade out, troca o texto e faz o fade in
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % words.length;
+            const currentWord = words[currentIndex];
+            
+            // Atualiza o texto
+            segmentText.textContent = currentWord;
+            segmentText.classList.remove('fade-out');
+            segmentText.classList.add('fade-in');
+            
+            // Atualiza a imagem de fundo com fade
+            const heroSection = document.querySelector('.hero');
+            heroSection.style.opacity = '0.7'; // Fade out suave da seção inteira
+            
+            setTimeout(() => {
+            // Muda a imagem de fundo
+            heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${backgroundImages[currentWord]}')`;
+            heroSection.style.opacity = '1'; // Fade in
+            }, 300);
+            
+            // Remove a classe fade-in após a animação para o próximo ciclo
+            setTimeout(() => {
+            segmentText.classList.remove('fade-in');
+            }, 500);
+        }, 500);
+    }
+
+    // Defina a imagem inicial quando a página carregar
+    window.addEventListener('DOMContentLoaded', () => {
+        const heroSection = document.querySelector('.hero');
+        heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${backgroundImages["marcenaria"]}')`;
+    });
+    
+    // Muda a palavra a cada 3 segundos (incluindo tempo da animação)
+    setInterval(changeText, 3000);
+
+        // Simples script para envio do formulário
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Obrigado pelo interesse! Em breve entraremos em contato.');
+            // Aqui você pode adicionar o código para enviar os dados para seu backend
+        });
+
+        // Scroll suave para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Menu mobile
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
