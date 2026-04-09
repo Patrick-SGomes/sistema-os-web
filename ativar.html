@@ -91,8 +91,13 @@
             return;
         }
 
+        if (!token) {
+            document.getElementById('msg').innerText = "Token inválido";
+            return;
+        }
+
         try {
-            const response = await fetch('https://seu-backend.com/auth/activate', {
+            const response = await fetch('https://scalable-giuliana-uninterestedly.ngrok-free.dev/auth/activate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token, password })
