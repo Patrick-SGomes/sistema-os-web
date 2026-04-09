@@ -792,14 +792,12 @@
     setInterval(changeText, 3000);
 
         // Simples script para envio do formulário
-        document.getElementById('lead-form').addEventListener('submit', function(e) {
-            e.preventDefault();
 document.getElementById('lead-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const data = {
         name: document.getElementById('name').value,
-        company: document.getElementById('company').value,
+        companyName: document.getElementById('company').value,
         email: document.getElementById('email').value,
         whatsapp: document.getElementById('phone').value,
         businessType: document.getElementById('business').value
@@ -816,7 +814,7 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
 
         if (response.ok) {
             alert('Verifique seu e-mail para ativar sua conta 🚀');
-            document.getElementById('lead-form').reset();
+            this.reset();
         } else {
             alert('Erro ao enviar. Tente novamente.');
         }
@@ -825,7 +823,6 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
         alert('Erro de conexão com o servidor.');
     }
 });
-        });
 
         // Scroll suave para links internos
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
