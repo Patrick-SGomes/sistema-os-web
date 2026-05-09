@@ -961,8 +961,8 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     });
 
 
-    // 🔥 tratamento inteligente
-    if (response.status === 409) {
+    // 🔥 verifica mensagem
+    if (text.includes("Email já cadastrado")) {
       showAlert("Este e-mail já está cadastrado", "warning");
 
       btn.textContent = "Solicitar demonstração gratuita";
