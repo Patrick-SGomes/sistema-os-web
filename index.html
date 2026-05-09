@@ -942,6 +942,11 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     message: document.getElementById('message').value
   };
 
+  if (response.status === 409) {
+    showAlert("Este e-mail já está cadastrado", "warning");
+    return;
+  }
+
   // 🔥 validação simples
   if (!email.includes("@")) {
     showAlert("E-mail inválido", "error");
