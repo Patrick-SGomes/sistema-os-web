@@ -960,15 +960,6 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
       body: JSON.stringify(data)
     });
 
-    // 🔥 tratamento inteligente
-    if (response.status === 409) {
-      showAlert("Este e-mail já está cadastrado", "warning");
-
-      btn.textContent = "Solicitar demonstração gratuita";
-      btn.disabled = false;
-      return;
-    }
-
     if (response.ok) {
       showAlert("Verifique seu e-mail para ativar sua conta 🚀", "success");
 
