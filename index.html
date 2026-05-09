@@ -961,8 +961,8 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
     });
 
 
-if (json.code === "EMAIL_EXISTS") {
-  showAlert(json.message, "warning");
+if (json.code === 403) {
+  showAlert"Não foi possivel realizar o cadastro", "warning");
   return;
 }
     
