@@ -797,6 +797,38 @@ footer{padding:2.5rem 3.5rem;border-top:1px solid rgba(255,255,255,.06);display:
     pspd: .3+Math.random()*.4,
   });
 
+function showAlert(message, type = "success") {
+  const alert = document.createElement("div");
+
+  alert.textContent = message;
+
+  alert.style.position = "fixed";
+  alert.style.top = "20px";
+  alert.style.right = "20px";
+  alert.style.padding = "15px 20px";
+  alert.style.borderRadius = "8px";
+  alert.style.color = "white";
+  alert.style.fontWeight = "bold";
+  alert.style.zIndex = "9999";
+  alert.style.boxShadow = "0 5px 20px rgba(0,0,0,0.2)";
+  alert.style.transition = "all .3s ease";
+
+  if (type === "error") {
+    alert.style.background = "#dc2626";
+  } else if (type === "warning") {
+    alert.style.background = "#f59e0b";
+  } else {
+    alert.style.background = "#16a34a";
+  }
+
+  document.body.appendChild(alert);
+
+  setTimeout(() => {
+    alert.style.opacity = "0";
+    setTimeout(() => alert.remove(), 300);
+  }, 3000);
+}
+  
   const pts = Array.from({length:32}, mk);
   let t = 0;
 
@@ -899,14 +931,22 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
 
   const btn = document.getElementById('sub-btn');
 
+  const email = document.getElementById('email').value;
+
   const data = {
     name: document.getElementById('name').value,
     companyName: document.getElementById('company').value,
-    email: document.getElementById('email').value,
+    email: email,
     whatsapp: document.getElementById('phone').value,
     businessType: document.getElementById('business').value,
     message: document.getElementById('message').value
   };
+
+  // 🔥 validação simples
+  if (!email.includes("@")) {
+    showAlert("E-mail inválido", "error");
+    return;
+  }
 
   try {
     btn.textContent = "Enviando...";
@@ -920,36 +960,34 @@ document.getElementById('lead-form').addEventListener('submit', async function(e
       body: JSON.stringify(data)
     });
 
+    // 🔥 tratamento inteligente
+    if (response.status === 409) {
+      showAlert("Este e-mail já está cadastrado", "warning");
+
+      btn.textContent = "Solicitar demonstração gratuita";
+      btn.disabled = false;
+      return;
+    }
+
     if (response.ok) {
-      btn.textContent = '✓ Verifique seu e-mail para ativar sua conta 🚀';
-      btn.style.background = '#2e7d52';
+      showAlert("Verifique seu e-mail para ativar sua conta 🚀", "success");
+
+      btn.textContent = "✓ Enviado com sucesso!";
+      btn.style.background = "#16a34a";
 
       this.reset();
 
-      setTimeout(() => {
-        btn.textContent = 'Solicitar demonstração gratuita';
-        btn.style.background = '';
-        btn.disabled = false;
-      }, 5000);
-
     } else {
-      btn.textContent = 'Erro ao enviar. Tente novamente.';
-      btn.style.background = '#c62828';
-
-      setTimeout(() => {
-        btn.textContent = 'Solicitar demonstração gratuita';
-        btn.style.background = '';
-        btn.disabled = false;
-      }, 4000);
+      throw new Error();
     }
 
   } catch (err) {
-    btn.textContent = 'Erro de conexão com servidor';
-    btn.style.background = '#c62828';
+    showAlert("Erro de conexão com servidor", "error");
 
+  } finally {
     setTimeout(() => {
-      btn.textContent = 'Solicitar demonstração gratuita';
-      btn.style.background = '';
+      btn.textContent = "Solicitar demonstração gratuita";
+      btn.style.background = "";
       btn.disabled = false;
     }, 4000);
   }
