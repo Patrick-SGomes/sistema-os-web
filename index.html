@@ -1,994 +1,844 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema OS — Gestão que funciona de verdade</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --navy:#1b2d4a; --navy2:#243859; --navy3:#0f1d30;
-  --gold:#b8762a; --gold2:#d4932f; --gold3:#e8b84b;
-  --chalk:#f0ece4; --muted:#6b7d96; --border:rgba(184,118,42,0.18);
-  --r:12px;
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--navy3);color:var(--chalk);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-body::before{content:'';position:fixed;inset:0;z-index:998;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E");opacity:.45;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SistemaOS | Gestão para Marcenarias, Marmorarias e Serralheria</title>
+    <style>
+        :root {
+            --primary: #2d5d7b;
+            --secondary: #e67e22;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d3e53 100%);
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1200/600');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding-top: 60px;
+            transition: opacity 0.5s ease-in-out, background-image 0.5s ease-in-out;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .highlight-text {
+            color: var(--secondary);
+            display: inline-block;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+    
+        .fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+        }
+        
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.logo-mark{display:inline-flex;align-items:baseline;gap:.1em;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:-.02em;user-select:none;text-decoration:none;}
-.lm-s{color:var(--chalk);} 
-.lm-o{color:var(--gold2);}
+        @keyframes textChange {
+            0%, 24% {
+                content: "marcenaria";
+            }
+            25%, 49% {
+                content: "marmoraria";
+            }
+            50%, 74% {
+                content: "vidraçaria";
+            }
+            75%, 100% {
+                content: "serralheria";
+            }
+        }
+        
+        /* Alternativa com JavaScript se a animação CSS não funcionar bem */
+        h1 .highlight-text {
+            color: var(--secondary);
+        }
 
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;padding:0 3.5rem;display:flex;align-items:center;justify-content:space-between;transition:background .45s,box-shadow .45s;}
-nav.scrolled{background:rgba(15,29,48,.95);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 1px 0 rgba(184,118,42,.14);}
-.nav-links{display:flex;gap:.15rem;list-style:none;}
-.nav-links a{font-size:.8rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:rgba(240,236,228,.5);text-decoration:none;padding:.45rem .9rem;border-radius:6px;transition:color .2s,background .2s;}
-.nav-links a:hover{color:var(--chalk);background:rgba(255,255,255,.06);}
-.nav-cta{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff!important;background:var(--gold)!important;padding:.5rem 1.4rem!important;border-radius:50px!important;transition:background .25s,transform .2s!important;}
-.nav-cta:hover{background:var(--gold2)!important;transform:translateY(-1px);}
-.hamburger{display:none;cursor:pointer;color:var(--chalk);font-size:1.4rem;background:none;border:none;}
-
-#ambient-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
-/* ── HERO ── */
-.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 3.5rem;padding-top:66px;background:linear-gradient(160deg,var(--navy3) 0%,var(--navy) 55%,#1a2f48 100%);}
-.hero-rule{position:absolute;top:66px;left:3.5rem;right:3.5rem;height:1px;background:var(--border);z-index:2;}
-.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:5rem 0;}
-.hero-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;opacity:0;animation:rise .7s .1s forwards;}
-.ey-line{width:28px;height:1px;background:var(--gold);} .ey-text{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
-.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.6rem,4.5vw,4.4rem);font-weight:800;line-height:1.08;letter-spacing:-.035em;color:var(--chalk);opacity:0;animation:rise .8s .25s forwards;}
-.hero h1 .accent{color:var(--gold2);font-style:italic;font-weight:300;display:block;letter-spacing:-.02em;}
-.hero-body{margin-top:1.8rem;font-size:1rem;font-weight:300;line-height:1.8;color:var(--muted);max-width:430px;opacity:0;animation:rise .8s .4s forwards;}
-.hero-actions{display:flex;gap:1rem;margin-top:2.5rem;align-items:center;flex-wrap:wrap;opacity:0;animation:rise .8s .55s forwards;}
-.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#fff;padding:.88rem 2rem;border-radius:50px;font-size:.875rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;transition:background .25s,transform .25s,box-shadow .25s;box-shadow:0 8px 28px rgba(184,118,42,.28);}
-.btn-p:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 14px 36px rgba(184,118,42,.38);}
-.btn-g{display:inline-flex;align-items:center;gap:.45rem;color:rgba(240,236,228,.55);font-size:.875rem;font-weight:500;text-decoration:none;transition:color .2s;}
-.btn-g:hover{color:var(--chalk);}
-.btn-g svg{transition:transform .2s;} .btn-g:hover svg{transform:translateX(3px);}
-.hero-trust{display:flex;gap:2.5rem;margin-top:3.5rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .8s .7s forwards;flex-wrap:wrap;}
-.tn{font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;color:var(--chalk);line-height:1;letter-spacing:-.03em;}
-.tn em{color:var(--gold2);font-style:normal;} .tl{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
-
-/* ══════════════════════════════════════
-   MOCKUP SHELL
-══════════════════════════════════════ */
-.hero-mockup{position:relative;opacity:0;animation:riseCard .9s .4s forwards;}
-.mockup-shell{background:#f0f2f5;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04);position:relative;}
-.m-chrome{height:22px;background:#d0d3d8;display:flex;align-items:center;padding:0 .6rem;gap:.35rem;}
-.m-dot{width:9px;height:9px;border-radius:50%;}
-.m-dot:nth-child(1){background:#ff5f57} .m-dot:nth-child(2){background:#febc2e} .m-dot:nth-child(3){background:#28c840}
-
-/* system nav */
-.m-nav{background:#1b2d4a;height:38px;display:flex;align-items:center;padding:0 .8rem;gap:.25rem;position:relative;z-index:10;}
-.m-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:700;color:#fff;margin-right:.4rem;white-space:nowrap;}
-.m-logo em{color:var(--gold2);font-style:normal;}
-.m-menu-item{position:relative;}
-.m-menu-btn{font-size:.6rem;color:rgba(255,255,255,.65);padding:.3rem .42rem;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:.18rem;white-space:nowrap;transition:background .15s,color .15s;user-select:none;border:none;background:none;font-family:'DM Sans',sans-serif;}
-.m-menu-btn:hover,.m-menu-btn.open{background:rgba(255,255,255,.12);color:#fff;}
-.m-caret{font-size:.42rem;opacity:.6;}
-.m-dropdown{position:absolute;top:calc(100% + 2px);left:0;background:#1e3554;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.3rem 0;min-width:145px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;z-index:60;}
-.m-dropdown.open{display:block;}
-.m-dd-item{display:flex;align-items:center;gap:.45rem;padding:.38rem .8rem;font-size:.58rem;color:rgba(255,255,255,.65);cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-.m-dd-item:hover{background:rgba(255,255,255,.09);color:#fff;}
-.m-dd-sep{height:1px;background:rgba(255,255,255,.08);margin:.22rem 0;}
-.m-nav-right{margin-left:auto;display:flex;align-items:center;gap:.3rem;}
-.m-nav-btn{font-size:.56rem;color:rgba(255,255,255,.5);padding:.22rem .45rem;cursor:pointer;border-radius:4px;transition:background .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-.m-nav-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
-
-/* tabs */
-.m-tabs{background:#e8ebef;border-bottom:1px solid #d0d3d8;display:flex;align-items:center;padding:.28rem .55rem;gap:.3rem;}
-.m-tab{font-size:.56rem;background:#fff;border:1px solid #c8cbd0;border-radius:4px 4px 0 0;padding:.22rem .65rem;color:#1b2d4a;display:flex;align-items:center;gap:.28rem;font-family:'DM Sans',sans-serif;}
-
-/* body layout */
-.m-body{display:flex;height:310px;overflow:hidden;}
-.m-side{width:66px;background:#fff;border-right:1px solid #dde0e5;display:flex;flex-direction:column;align-items:center;padding:.5rem 0;gap:.02rem;flex-shrink:0;}
-.m-icon{width:58px;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.4rem .2rem;border-radius:6px;cursor:pointer;transition:background .15s;}
-.m-icon:hover{background:#f0f2f5;}
-.m-icon.active{background:#e0e8f5;}
-.m-icon .ico{font-size:1rem;}
-.m-icon .lbl{font-size:.46rem;color:#6b7d96;text-align:center;line-height:1.2;font-family:'DM Sans',sans-serif;}
-.m-icon.active .lbl{color:#1b2d4a;font-weight:600;}
-
-/* screens */
-.m-main{flex:1;background:#f4f6f9;overflow:hidden;position:relative;}
-.m-screen{position:absolute;inset:0;overflow-y:auto;padding:.9rem;display:none;flex-direction:column;gap:.7rem;}
-.m-screen.active{display:flex;}
-
-/* status bar */
-.m-statusbar{background:#e0e3e8;border-top:1px solid #d0d3d8;padding:.22rem .7rem;display:flex;gap:1.5rem;}
-.m-sb{font-size:.48rem;color:#7a8494;font-family:'DM Sans',sans-serif;}
-
-/* ── DASHBOARD ── */
-.m-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.55rem;}
-.m-card{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.mc-lbl{font-size:.5rem;color:#8a9bb0;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Sans',sans-serif;}
-.mc-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.1rem;font-weight:700;color:#1b2d4a;margin-top:.18rem;}
-.mc-sub{font-size:.5rem;margin-top:.13rem;font-family:'DM Sans',sans-serif;}
-.mc-sub.g{color:#3da668;} .mc-sub.a{color:#b8762a;} .mc-sub.r{color:#e05252;}
-.m-chart-wrap{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.m-chart-title{font-size:.5rem;color:#8a9bb0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;font-family:'DM Sans',sans-serif;}
-.m-bars{display:flex;align-items:flex-end;gap:.26rem;height:40px;}
-.m-bar{flex:1;border-radius:3px 3px 0 0;background:#e8edf2;transition:height .7s cubic-bezier(.4,0,.2,1);}
-.m-bar.hi{background:#1b2d4a;} .m-bar.ac{background:var(--gold);}
-.m-proj-list{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.mp-row{display:flex;align-items:center;gap:.5rem;padding:.26rem 0;border-bottom:1px solid #f4f6f9;}
-.mp-row:last-child{border-bottom:none;}
-.mp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.mp-dot.g{background:#3da668;} .mp-dot.a{background:#b8762a;} .mp-dot.b{background:#4a9fba;}
-.mp-name{font-size:.52rem;font-family:'DM Sans',sans-serif;color:#1b2d4a;flex:1;}
-.mp-st{font-size:.5rem;font-family:'DM Sans',sans-serif;color:#8a9bb0;white-space:nowrap;}
-
-/* ── TABLE SHARED ── */
-.m-table-wrap{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.m-table-header{padding:.6rem .8rem;background:#1b2d4a;display:flex;align-items:center;justify-content:space-between;}
-.m-table-title{font-size:.58rem;font-weight:600;color:#fff;font-family:'DM Sans',sans-serif;}
-.m-table-btn{font-size:.52rem;background:var(--gold);color:#fff;border:none;border-radius:4px;padding:.22rem .55rem;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.m-search{display:flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-bottom:1px solid #eee;background:#fafafa;}
-.m-search-input{flex:1;font-size:.52rem;border:1px solid #ddd;border-radius:4px;padding:.22rem .45rem;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
-.m-table{width:100%;border-collapse:collapse;}
-.m-table th{font-size:.48rem;font-weight:600;color:#8a9bb0;text-transform:uppercase;letter-spacing:.05em;padding:.4rem .6rem;text-align:left;border-bottom:1px solid #eee;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.m-table td{font-size:.52rem;color:#1b2d4a;padding:.38rem .6rem;border-bottom:1px solid #f5f7fa;font-family:'DM Sans',sans-serif;}
-.m-table tr:hover td{background:#f9fafb;}
-.badge{display:inline-block;font-size:.46rem;font-weight:600;padding:.18rem .45rem;border-radius:50px;font-family:'DM Sans',sans-serif;}
-.badge.g{background:#e8f8f0;color:#3da668;} .badge.a{background:#fff5e6;color:#b8762a;} .badge.r{background:#fef0f0;color:#e05252;} .badge.b{background:#e8f4fb;color:#4a9fba;}
-
-/* ── AGENDA ── */
-.agenda-header{background:#fff;border-radius:7px;padding:.6rem .8rem;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between;}
-.agenda-month{font-family:'Plus Jakarta Sans',sans-serif;font-size:.7rem;font-weight:700;color:#1b2d4a;}
-.agenda-nav{display:flex;gap:.3rem;}
-.agenda-nav-btn{font-size:.55rem;background:#f0f2f5;border:none;border-radius:4px;padding:.2rem .45rem;cursor:pointer;color:#1b2d4a;font-family:'DM Sans',sans-serif;}
-.cal-grid{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);background:#1b2d4a;}
-.cal-day-name{font-size:.46rem;font-weight:600;color:rgba(255,255,255,.7);text-align:center;padding:.35rem 0;font-family:'DM Sans',sans-serif;}
-.cal-days{display:grid;grid-template-columns:repeat(7,1fr);}
-.cal-day{border:1px solid #f0f2f5;padding:.3rem .35rem;min-height:36px;position:relative;cursor:pointer;transition:background .15s;}
-.cal-day:hover{background:#fafafa;}
-.cal-day.other{opacity:.3;}
-.cal-day.today{background:#e8f0fb;}
-.cal-day-num{font-size:.48rem;color:#1b2d4a;font-family:'DM Sans',sans-serif;font-weight:600;}
-.cal-event{font-size:.42rem;margin-top:.2rem;padding:.1rem .28rem;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'DM Sans',sans-serif;}
-.cal-event.g{background:#e8f8f0;color:#3da668;}
-.cal-event.a{background:#fff5e6;color:#b8762a;}
-.cal-event.b{background:#e8f4fb;color:#4a9fba;}
-
-/* ── ORÇAMENTO ── */
-.orc-form{background:#fff;border-radius:7px;padding:.8rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.orc-form-title{font-size:.58rem;font-weight:700;color:#1b2d4a;margin-bottom:.6rem;font-family:'DM Sans',sans-serif;border-bottom:1px solid #eee;padding-bottom:.4rem;}
-.orc-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.45rem;}
-.orc-field label{display:block;font-size:.46rem;color:#8a9bb0;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.2rem;font-family:'DM Sans',sans-serif;}
-.orc-field input,.orc-field select{width:100%;font-size:.52rem;border:1px solid #ddd;border-radius:4px;padding:.25rem .45rem;color:#1b2d4a;font-family:'DM Sans',sans-serif;outline:none;background:#fafafa;}
-.orc-items{background:#f9fafb;border-radius:6px;overflow:hidden;margin-top:.5rem;}
-.orc-items-header{display:flex;align-items:center;gap:.4rem;padding:.35rem .6rem;background:#1b2d4a;}
-.orc-items-title{font-size:.5rem;font-weight:600;color:#fff;font-family:'DM Sans',sans-serif;flex:1;}
-.orc-add-btn{font-size:.48rem;background:var(--gold);color:#fff;border:none;border-radius:3px;padding:.18rem .45rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.orc-total-row{display:flex;justify-content:flex-end;align-items:center;gap:1rem;padding:.45rem .6rem;border-top:2px solid #eee;background:#fff;}
-.orc-total-lbl{font-size:.52rem;color:#8a9bb0;font-family:'DM Sans',sans-serif;}
-.orc-total-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:800;color:#1b2d4a;}
-.orc-actions{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.5rem;}
-.orc-btn{font-size:.52rem;padding:.3rem .7rem;border-radius:4px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;}
-.orc-btn.primary{background:var(--gold);color:#fff;}
-.orc-btn.secondary{background:#f0f2f5;color:#1b2d4a;}
-
-/* ── REMINDERS ── */
-.reminder-add{background:#fff;border-radius:7px;padding:.65rem .8rem;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:.5rem;}
-.reminder-input{flex:1;font-size:.54rem;border:1px solid #ddd;border-radius:4px;padding:.28rem .5rem;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
-.reminder-btn{font-size:.52rem;background:var(--gold);color:#fff;border:none;border-radius:4px;padding:.28rem .6rem;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.reminder-list{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.reminder-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;border-bottom:1px solid #f5f7fa;cursor:pointer;}
-.reminder-item:last-child{border-bottom:none;}
-.reminder-cb{width:13px;height:13px;border-radius:50%;border:1.5px solid #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.reminder-item.done .reminder-cb{background:#3da668;border-color:#3da668;}
-.reminder-item.done .reminder-cb::after{content:'✓';font-size:.45rem;color:#fff;}
-.reminder-text{font-size:.54rem;font-family:'DM Sans',sans-serif;color:#1b2d4a;flex:1;line-height:1.4;}
-.reminder-item.done .reminder-text{text-decoration:line-through;color:#aaa;}
-.reminder-date{font-size:.48rem;color:#8a9bb0;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.reminder-tag{font-size:.44rem;padding:.12rem .38rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-weight:600;}
-
-/* ── USERS ── */
-.user-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;}
-.user-card{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:.6rem;}
-.user-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'DM Sans',sans-serif;}
-.user-name{font-size:.56rem;font-weight:700;color:#1b2d4a;font-family:'DM Sans',sans-serif;}
-.user-role{font-size:.48rem;color:#8a9bb0;font-family:'DM Sans',sans-serif;margin-top:.1rem;}
-.user-status{margin-top:.2rem;}
-
-/* ── SUPORTE ── */
-.suporte-wrap{display:flex;flex-direction:column;gap:.6rem;}
-.suporte-card{background:#fff;border-radius:7px;padding:.7rem .85rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.suporte-title{font-size:.58rem;font-weight:700;color:#1b2d4a;margin-bottom:.3rem;font-family:'DM Sans',sans-serif;}
-.suporte-text{font-size:.52rem;color:#6b7d96;line-height:1.5;font-family:'DM Sans',sans-serif;}
-.suporte-link{font-size:.52rem;color:var(--gold);text-decoration:none;font-weight:600;font-family:'DM Sans',sans-serif;}
-.suporte-chat{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-.suporte-chat-header{background:#1b2d4a;padding:.5rem .7rem;display:flex;align-items:center;gap:.4rem;}
-.suporte-chat-dot{width:7px;height:7px;border-radius:50%;background:#3da668;}
-.suporte-chat-title{font-size:.54rem;color:#fff;font-family:'DM Sans',sans-serif;font-weight:600;}
-.chat-msgs{padding:.6rem .7rem;display:flex;flex-direction:column;gap:.4rem;}
-.chat-msg{display:flex;gap:.4rem;align-items:flex-start;}
-.chat-msg.user{flex-direction:row-reverse;}
-.chat-bubble{font-size:.5rem;padding:.3rem .55rem;border-radius:8px;max-width:75%;line-height:1.4;font-family:'DM Sans',sans-serif;}
-.chat-msg.agent .chat-bubble{background:#f0f2f5;color:#1b2d4a;border-radius:2px 8px 8px 8px;}
-.chat-msg.user .chat-bubble{background:var(--gold);color:#fff;border-radius:8px 2px 8px 8px;}
-.chat-av{width:20px;height:20px;border-radius:50%;font-size:.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Sans',sans-serif;}
-
-/* ══════════════════════════════
-   REST OF PAGE
-══════════════════════════════ */
-.sec{padding:7rem 3.5rem;} .w{max-width:1200px;margin:0 auto;}
-.sec-tag{display:inline-flex;align-items:center;gap:.6rem;font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
-.sec-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
-.sec-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:800;line-height:1.1;color:var(--chalk);letter-spacing:-.035em;}
-.sec-title .light{font-weight:300;letter-spacing:-.02em;}
-.sec-sub{margin-top:1rem;font-size:.95rem;font-weight:300;line-height:1.8;color:var(--muted);max-width:480px;}
-
-.features-sec{background:var(--navy);position:relative;overflow:hidden;}
-.feat-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem;gap:3rem;}
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;}
-.feat{background:var(--navy);padding:2.2rem 2rem;position:relative;overflow:hidden;transition:background .3s;}
-.feat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
-.feat:hover{background:rgba(184,118,42,.05);} .feat:hover::after{transform:scaleX(1);}
-.feat-n{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(184,118,42,1);line-height:1;margin-bottom:.8rem;letter-spacing:-.04em;}
-.feat-ico{font-size:1.5rem;margin-bottom:1rem;}
-.feat h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:var(--chalk);margin-bottom:.55rem;letter-spacing:-.01em;}
-.feat p{font-size:.855rem;font-weight:300;color:var(--muted);line-height:1.75;}
-
-.seg-sec{background:var(--navy3);}
-.seg-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;margin-top:3.5rem;}
-.seg-card{background:var(--navy3);padding:2.5rem 1.8rem;cursor:pointer;position:relative;transition:background .35s;}
-.seg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s;}
-.seg-card:hover{background:rgba(184,118,42,.05);}
-.seg-card:hover::before,.seg-card.active::before{transform:scaleX(1);}
-.seg-card.active{background:rgba(184,118,42,.07);}
-.seg-ico{font-size:1.8rem;margin-bottom:.8rem;}
-.seg-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:var(--chalk);margin-bottom:.5rem;letter-spacing:-.01em;}
-.seg-desc{font-size:.82rem;color:var(--muted);font-weight:300;line-height:1.6;}
-.seg-arr{margin-top:.9rem;font-size:.78rem;color:var(--gold);opacity:0;transform:translateX(-4px);transition:opacity .3s,transform .3s;}
-.seg-card:hover .seg-arr,.seg-card.active .seg-arr{opacity:1;transform:none;}
-
-.testi-sec{background:var(--navy);}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;margin-top:3.5rem;}
-.testi{background:var(--navy);padding:2.2rem 2rem;transition:background .3s;}
-.testi:hover{background:rgba(184,118,42,.04);}
-.testi-stars{color:var(--gold);font-size:.8rem;letter-spacing:3px;margin-bottom:1.2rem;}
-.testi-quote{font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:300;font-style:italic;color:var(--chalk);line-height:1.7;margin-bottom:1.8rem;}
-.testi-author{display:flex;align-items:center;gap:.9rem;}
-.testi-av-outer{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--navy2),var(--gold));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:600;color:var(--chalk);}
-.testi-name{font-size:.85rem;font-weight:600;color:var(--chalk);}
-.testi-role{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
-
-.pricing-sec{background:var(--navy3);}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3.5rem;align-items:start;}
-.plan{border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:2.5rem;position:relative;overflow:hidden;transition:border-color .3s,transform .35s;background:var(--navy);}
-.plan:hover{border-color:rgba(184,118,42,.3);transform:translateY(-4px);}
-.plan.featured{border-color:var(--gold);background:linear-gradient(160deg,rgba(184,118,42,.08) 0%,var(--navy) 55%);box-shadow:0 0 60px rgba(184,118,42,.08);}
-.plan.featured:hover{transform:translateY(-4px);}
-.plan::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,118,42,.4),transparent);}
-.plan-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.25rem .7rem;border-radius:50px;}
-.plan-name{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;}
-.plan-price{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.8rem;font-weight:800;color:var(--chalk);line-height:1;filter:blur(5px);user-select:none;letter-spacing:-.04em;}
-.plan.featured .plan-price{color:var(--gold2);}
-.plan-period{font-size:.75rem;color:var(--muted);margin-top:.4rem;margin-bottom:2rem;}
-.plan-cta{display:block;width:100%;padding:.85rem;border-radius:50px;text-align:center;font-size:.82rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:all .25s;margin-bottom:2rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.plan-cta.solid{background:var(--gold);color:#fff;box-shadow:0 6px 24px rgba(184,118,42,.25);}
-.plan-cta.solid:hover{background:var(--gold2);transform:translateY(-2px);}
-.plan-cta.outline{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);}
-.plan-cta.outline:hover{border-color:var(--gold);color:var(--gold);}
-.plan-feats{list-style:none;display:flex;flex-direction:column;gap:.75rem;}
-.plan-feats li{display:flex;align-items:flex-start;gap:.7rem;font-size:.855rem;font-weight:300;color:var(--muted);line-height:1.5;}
-.plan-feats li::before{content:'';width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:.15rem;border:1px solid var(--gold);background:rgba(184,118,42,.1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5 3.5-4' stroke='%23b8762a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/10px no-repeat;}
-.plan.featured .plan-feats li{color:rgba(240,236,228,.7);}
-
-.cta-sec{padding:8rem 3.5rem;text-align:center;background:var(--navy);position:relative;overflow:hidden;}
-.cta-sec::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(184,118,42,.07) 0%,transparent 70%);}
-.cta-sec::after{content:'';position:absolute;top:0;left:3.5rem;right:3.5rem;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
-.cta-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.4rem,5vw,4.2rem);font-weight:800;line-height:1.05;color:var(--chalk);letter-spacing:-.04em;margin-bottom:1.2rem;}
-.cta-title .accent{color:var(--gold2);font-weight:300;font-style:italic;}
-.cta-sub{font-size:.95rem;color:var(--muted);font-weight:300;margin-bottom:2.5rem;}
-
-.contact-sec{background:var(--navy3);}
-.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:start;}
-.ci-head h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:800;color:var(--chalk);margin-bottom:1rem;line-height:1.1;letter-spacing:-.035em;}
-.ci-head h2 .light{font-weight:300;}
-.ci-head p{font-size:.9rem;color:var(--muted);line-height:1.8;margin-bottom:2.5rem;font-weight:300;}
-.ci-item{display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem;}
-.ci-ico{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
-.ci-t strong{display:block;font-size:.68rem;color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.1rem;}
-.ci-t span{color:var(--chalk);font-size:.875rem;}
-.form-wrap{background:var(--navy);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:2.8rem;position:relative;overflow:hidden;}
-.form-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,118,42,.4),transparent);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.fg{margin-bottom:1.1rem;}
-.fg label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
-.fc{width:100%;padding:.8rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:var(--chalk);font-size:.9rem;font-family:'DM Sans',sans-serif;transition:border-color .2s,background .2s;}
-.fc:focus{outline:none;border-color:var(--gold);background:rgba(184,118,42,.05);}
-.fc::placeholder{color:rgba(107,125,150,.5);}
-.fc option{background:var(--navy);}
-.submit{width:100%;padding:.95rem;margin-top:.5rem;background:var(--gold);color:#fff;border:none;border-radius:50px;font-size:.875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .25s,transform .25s,box-shadow .25s;box-shadow:0 6px 24px rgba(184,118,42,.25);}
-.submit:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(184,118,42,.35);}
-
-footer{padding:2.5rem 3.5rem;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;background:var(--navy3);}
-.foot-links{display:flex;gap:1.8rem;flex-wrap:wrap;}
-.foot-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .2s;}
-.foot-links a:hover{color:var(--chalk);}
-.foot-copy{font-size:.75rem;color:rgba(107,125,150,.45);}
-
-.mob-menu{position:fixed;inset:0;z-index:300;background:rgba(15,29,48,.97);backdrop-filter:blur(24px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;opacity:0;pointer-events:none;transition:opacity .3s;}
-.mob-menu.open{opacity:1;pointer-events:all;}
-.mob-menu a{font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;color:var(--chalk);text-decoration:none;transition:color .2s;letter-spacing:-.03em;}
-.mob-menu a:hover{color:var(--gold2);}
-.mob-close{position:absolute;top:1.5rem;right:2rem;font-size:1.8rem;color:var(--muted);cursor:pointer;background:none;border:none;}
-
-.r{opacity:0;transform:translateY(20px);transition:opacity .75s ease,transform .75s ease;}
-.r.on{opacity:1;transform:none;}
-@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-@keyframes riseCard{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
-
-@media(max-width:1024px){.hero-inner{grid-template-columns:1fr;}.hero-mockup{display:none;}.feat-header{flex-direction:column;align-items:flex-start;}.features-grid{grid-template-columns:repeat(2,1fr);}.testi-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:420px;}.contact-grid{grid-template-columns:1fr;gap:3rem;}.seg-row{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:768px){nav{padding:0 1.5rem;}.nav-links{display:none;}.hamburger{display:block;}.hero,.sec,.cta-sec{padding-left:1.5rem;padding-right:1.5rem;}.hero{padding-top:66px;}.hero-inner{padding:3rem 0;}.features-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}footer{flex-direction:column;align-items:flex-start;padding:2rem 1.5rem;}}
-</style>
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .cta-btn:hover {
+            background-color: #d35400;
+            transform: translateY(-3px);
+        }
+        
+        .cta-btn.outline {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+        
+        .cta-btn.outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        section {
+            padding: 5rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .features {
+            background-color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            background-color: rgba(45, 93, 123, 0.1);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .testimonials {
+            background-color: #f5f7fa;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .pricing {
+            background-color: white;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .pricing-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            border: 2px solid #eee;
+        }
+        
+        .pricing-card.popular {
+            border-color: var(--secondary);
+            position: relative;
+            transform: scale(1.05);
+        }
+        
+        .pricing-card.popular::before {
+            content: "MAIS POPULAR";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .features-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d3e53 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .contact-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .submit-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #d35400;
+        }
+        
+        .contact-info {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .footer-links li {
+            margin: 0 1rem;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            margin-bottom: 2rem;
+        }
+        
+        .social-links a {
+            color: white;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .copyright {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .contact-form {
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <div class="logo">Sistema<span>OS</span></div>
+            <ul class="nav-links">
+                <li><a href="#hero">Início</a></li>
+                <li><a href="#features">Funcionalidades</a></li>
+                <li><a href="#testimonials">Depoimentos</a></li>
+                <li><a href="#pricing">Planos</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+            <div class="hamburger">☰</div>
+        </nav>
+    </header>
 
-<canvas id="ambient-canvas"></canvas>
-
-<div class="mob-menu" id="mob-menu">
-  <button class="mob-close" id="mob-close">✕</button>
-  <a href="#features" class="mob-link">Funcionalidades</a>
-  <a href="#segmentos" class="mob-link">Segmentos</a>
-  <a href="#pricing" class="mob-link">Planos</a>
-  <a href="#contact" class="mob-link">Contato</a>
-</div>
-
-<nav id="nav">
-  <a href="#hero" class="logo-mark"><span class="lm-s">Sistema </span><span class="lm-o">O$</span></a>
-  <ul class="nav-links">
-    <li><a href="#features">Funcionalidades</a></li>
-    <li><a href="#segmentos">Segmentos</a></li>
-    <li><a href="#pricing">Planos</a></li>
-    <li><a href="#contact" class="nav-cta">Fale conosco</a></li>
-  </ul>
-  <button class="hamburger" id="ham">☰</button>
-</nav>
-
-<!-- ══ HERO ══ -->
-<section class="hero" id="hero">
-  <div class="hero-rule"></div>
-  <div class="hero-inner">
-    <div>
-      <div class="hero-eyebrow"><span class="ey-line"></span><span class="ey-text">Gestão para quem trabalha com as mãos</span></div>
-      <h1>O sistema que<br>sua empresa<br><span class="accent">merec ter.</span></h1>
-      <p class="hero-body">Orçamentos precisos, estoque controlado e projetos acompanhados — tudo em um só lugar. Feito para marcenarias, marmorarias, vidraçarias e serralherias.</p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn-p">Solicitar demonstração <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a href="#features" class="btn-g">Ver funcionalidades <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </div>
-      <div class="hero-trust">
-        <div><div class="tn">500<em>+</em></div><div class="tl">Empresas ativas</div></div>
-        <div><div class="tn">35<em>%</em></div><div class="tl">Menos tempo em orçamentos</div></div>
-        <div><div class="tn">14</div><div class="tl">Dias grátis para testar</div></div>
-      </div>
-    </div>
-
-    <!-- MOCKUP -->
-    <div class="hero-mockup">
-      <div class="mockup-shell">
-        <div class="m-chrome"><div class="m-dot"></div><div class="m-dot"></div><div class="m-dot"></div></div>
-
-        <div class="m-nav">
-          <span class="m-logo">Sistema <em>O$</em></span>
-          <div class="m-menu-item"><button class="m-menu-btn" data-menu="cadastro">📋 Cadastro <span class="m-caret">▾</span></button>
-            <div class="m-dropdown" id="dd-cadastro"><div class="m-dd-item">👤 Clientes</div><div class="m-dd-item">🏭 Fornecedores</div><div class="m-dd-item">📦 Produtos</div><div class="m-dd-sep"></div><div class="m-dd-item">👷 Funcionários</div></div>
-          </div>
-          <div class="m-menu-item"><button class="m-menu-btn" data-menu="venda">🛍 Venda <span class="m-caret">▾</span></button>
-            <div class="m-dropdown" id="dd-venda"><div class="m-dd-item">📋 Nova OS</div><div class="m-dd-item">💼 Orçamentos</div><div class="m-dd-sep"></div><div class="m-dd-item">📊 Comissões</div></div>
-          </div>
-          <div class="m-menu-item"><button class="m-menu-btn" data-menu="producao">📊 Produção <span class="m-caret">▾</span></button>
-            <div class="m-dropdown" id="dd-producao"><div class="m-dd-item">🔄 Ordens de Serviço</div><div class="m-dd-item">📅 Agenda</div><div class="m-dd-sep"></div><div class="m-dd-item">✅ Concluídos</div></div>
-          </div>
-          <div class="m-menu-item"><button class="m-menu-btn" data-menu="estoque">📦 Estoques <span class="m-caret">▾</span></button>
-            <div class="m-dropdown" id="dd-estoque"><div class="m-dd-item">📋 Inventário</div><div class="m-dd-item">🔔 Alertas</div><div class="m-dd-sep"></div><div class="m-dd-item">📥 Entradas</div><div class="m-dd-item">📤 Saídas</div></div>
-          </div>
-          <div class="m-menu-item"><button class="m-menu-btn" data-menu="relatorios">📈 Relatórios <span class="m-caret">▾</span></button>
-            <div class="m-dropdown" id="dd-relatorios"><div class="m-dd-item">💰 Financeiro</div><div class="m-dd-item">📊 Produção</div><div class="m-dd-item">👥 Clientes</div><div class="m-dd-sep"></div><div class="m-dd-item">📤 Exportar</div></div>
-          </div>
-          <div class="m-nav-right"><div class="m-nav-btn">⚙ Sistema</div><div class="m-nav-btn">↩ Sair</div></div>
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Gerencie sua empresa de <span id="segment-text" class="highlight-text">marcenaria</span> com eficiência</h1>
+            <p>O SistemaOS é o software completo que automatiza seus processos, otimiza sua produção e aumenta seus lucros.</p>
+            <div>
+                <a href="#contact" class="cta-btn">Começar agora</a>
+                <a href="#features" class="cta-btn outline">Conheça as funcionalidades</a>
+            </div>
         </div>
+    </section>
 
-        <div class="m-tabs"><div class="m-tab" id="active-tab-label">🏠 Home</div></div>
-
-        <div class="m-body">
-          <!-- SIDEBAR -->
-          <div class="m-side">
-            <div class="m-icon active" data-screen="home" title="Home"><span class="ico">🏠</span><span class="lbl">Home</span></div>
-            <div class="m-icon" data-screen="lembretes" title="Lembretes"><span class="ico">📋</span><span class="lbl">Lembretes</span></div>
-            <div class="m-icon" data-screen="agenda" title="Agenda"><span class="ico">📅</span><span class="lbl">Agenda</span></div>
-            <div class="m-icon" data-screen="clientes" title="Clientes"><span class="ico">👥</span><span class="lbl">Clientes</span></div>
-            <div class="m-icon" data-screen="orcamento" title="Orçamento"><span class="ico">🧮</span><span class="lbl">Orçamento</span></div>
-            <div class="m-icon" data-screen="usuarios" title="Usuários"><span class="ico">👤</span><span class="lbl">Usuários</span></div>
-            <div class="m-icon" data-screen="suporte" title="Suporte"><span class="ico">🎧</span><span class="lbl">Suporte</span></div>
-          </div>
-
-          <div class="m-main">
-
-            <!-- HOME -->
-            <div class="m-screen active" id="screen-home">
-              <div class="m-row3">
-                <div class="m-card"><div class="mc-lbl">Faturamento</div><div class="mc-val">R$ 48k</div><div class="mc-sub g">↑ +12% este mês</div></div>
-                <div class="m-card"><div class="mc-lbl">OS Abertas</div><div class="mc-val">24</div><div class="mc-sub a">3 atrasadas</div></div>
-                <div class="m-card"><div class="mc-lbl">Orçamentos</div><div class="mc-val">7</div><div class="mc-sub g">Hoje</div></div>
-              </div>
-              <div class="m-chart-wrap">
-                <div class="m-chart-title">Receita — 7 meses</div>
-                <div class="m-bars" id="m-bars">
-                  <div class="m-bar" data-h="50%"></div><div class="m-bar hi" data-h="65%"></div>
-                  <div class="m-bar" data-h="42%"></div><div class="m-bar hi" data-h="78%"></div>
-                  <div class="m-bar" data-h="60%"></div><div class="m-bar hi" data-h="85%"></div>
-                  <div class="m-bar ac" data-h="100%"></div>
-                </div>
-              </div>
-              <div class="m-proj-list">
-                <div class="mc-lbl" style="padding:.0 0 .4rem">Projetos recentes</div>
-                <div class="mp-row"><div class="mp-dot g"></div><span class="mp-name">Cozinha planejada — Silva</span><span class="mp-st">Em produção</span></div>
-                <div class="mp-row"><div class="mp-dot a"></div><span class="mp-name">Bancada granito — Oliveira</span><span class="mp-st">Aguardando</span></div>
-                <div class="mp-row"><div class="mp-dot b"></div><span class="mp-name">Fachada vidro — Gomes</span><span class="mp-st">Instalação</span></div>
-              </div>
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Funcionalidades desenvolvidas para o seu negócio</h2>
+                <p>Solução completa para otimizar processos e aumentar a produtividade da sua empresa</p>
             </div>
-
-            <!-- LEMBRETES -->
-            <div class="m-screen" id="screen-lembretes">
-              <div class="reminder-add">
-                <input class="reminder-input" placeholder="Adicionar lembrete..." readonly>
-                <button class="reminder-btn">+ Adicionar</button>
-              </div>
-              <div class="reminder-list">
-                <div class="reminder-item done"><div class="reminder-cb"></div><span class="reminder-text">Ligar para cliente Silva — confirmar entrega da cozinha</span><span class="reminder-date">Hoje</span></div>
-                <div class="reminder-item"><div class="reminder-cb"></div><span class="reminder-text">Comprar MDF 15mm — estoque baixo</span><span class="reminder-date">Amanhã</span></div>
-                <div class="reminder-item"><div class="reminder-cb"></div><span class="reminder-text">Enviar orçamento de bancada para Sra. Pereira</span><span class="reminder-date">13/04</span></div>
-                <div class="reminder-item"><div class="reminder-cb"></div><span class="reminder-text">Reunião com equipe de produção — 14h</span><span class="reminder-date">14/04</span></div>
-                <div class="reminder-item"><div class="reminder-cb"></div><span class="reminder-text">Vistoria na obra Gomes — fachada de vidro</span><span class="reminder-date">15/04</span></div>
-              </div>
-            </div>
-
-            <!-- AGENDA -->
-            <div class="m-screen" id="screen-agenda">
-              <div class="agenda-header">
-                <span class="agenda-month">Abril 2025</span>
-                <div class="agenda-nav"><button class="agenda-nav-btn">‹</button><button class="agenda-nav-btn">›</button></div>
-              </div>
-              <div class="cal-grid">
-                <div class="cal-days-header">
-                  <div class="cal-day-name">Dom</div><div class="cal-day-name">Seg</div><div class="cal-day-name">Ter</div>
-                  <div class="cal-day-name">Qua</div><div class="cal-day-name">Qui</div><div class="cal-day-name">Sex</div><div class="cal-day-name">Sáb</div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Orçamentos Precisos</h3>
+                    <p>Calcule custos de materiais e mão de obra automaticamente para orçamentos precisos e competitivos.</p>
                 </div>
-                <div class="cal-days">
-                  <div class="cal-day other"><span class="cal-day-num">30</span></div>
-                  <div class="cal-day other"><span class="cal-day-num">31</span></div>
-                  <div class="cal-day"><span class="cal-day-num">1</span></div>
-                  <div class="cal-day"><span class="cal-day-num">2</span></div>
-                  <div class="cal-day"><span class="cal-day-num">3</span></div>
-                  <div class="cal-day"><span class="cal-day-num">4</span><div class="cal-event g">Entrega Silva</div></div>
-                  <div class="cal-day"><span class="cal-day-num">5</span></div>
-                  <div class="cal-day"><span class="cal-day-num">6</span></div>
-                  <div class="cal-day"><span class="cal-day-num">7</span><div class="cal-event b">Medição Gomes</div></div>
-                  <div class="cal-day"><span class="cal-day-num">8</span></div>
-                  <div class="cal-day"><span class="cal-day-num">9</span><div class="cal-event a">Reunião equipe</div></div>
-                  <div class="cal-day today"><span class="cal-day-num">10</span></div>
-                  <div class="cal-day"><span class="cal-day-num">11</span></div>
-                  <div class="cal-day"><span class="cal-day-num">12</span></div>
-                  <div class="cal-day"><span class="cal-day-num">13</span></div>
-                  <div class="cal-day"><span class="cal-day-num">14</span></div>
-                  <div class="cal-day"><span class="cal-day-num">15</span><div class="cal-event g">Vistoria fachada</div></div>
-                  <div class="cal-day"><span class="cal-day-num">16</span></div>
-                  <div class="cal-day"><span class="cal-day-num">17</span></div>
-                  <div class="cal-day"><span class="cal-day-num">18</span></div>
-                  <div class="cal-day"><span class="cal-day-num">19</span><div class="cal-event b">Instalação Pereira</div></div>
-                  <div class="cal-day"><span class="cal-day-num">20</span></div>
-                  <div class="cal-day"><span class="cal-day-num">21</span></div>
-                  <div class="cal-day"><span class="cal-day-num">22</span></div>
-                  <div class="cal-day"><span class="cal-day-num">23</span></div>
-                  <div class="cal-day"><span class="cal-day-num">24</span></div>
-                  <div class="cal-day"><span class="cal-day-num">25</span></div>
-                  <div class="cal-day"><span class="cal-day-num">26</span></div>
-                  <div class="cal-day"><span class="cal-day-num">27</span></div>
-                  <div class="cal-day"><span class="cal-day-num">28</span></div>
-                  <div class="cal-day"><span class="cal-day-num">29</span></div>
-                  <div class="cal-day"><span class="cal-day-num">30</span></div>
-                  <div class="cal-day other"><span class="cal-day-num">1</span></div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Controle de Estoque</h3>
+                    <p>Monitore seu inventário em tempo real, evite desperdícios e nunca fique sem materiais essenciais.</p>
                 </div>
-              </div>
-            </div>
-
-            <!-- CLIENTES -->
-            <div class="m-screen" id="screen-clientes">
-              <div class="m-table-wrap">
-                <div class="m-table-header"><span class="m-table-title">👥 Lista de Clientes</span><button class="m-table-btn">+ Novo Cliente</button></div>
-                <div class="m-search"><input class="m-search-input" placeholder="🔍  Buscar cliente..."><span style="font-size:.52rem;color:#aaa;font-family:'DM Sans',sans-serif;">128 registros</span></div>
-                <table class="m-table">
-                  <thead><tr><th>Nome</th><th>Telefone</th><th>Cidade</th><th>Segmento</th><th>Status</th></tr></thead>
-                  <tbody>
-                    <tr><td>Carlos Silva</td><td>(11) 99999-1234</td><td>São Paulo</td><td>Marcenaria</td><td><span class="badge g">Ativo</span></td></tr>
-                    <tr><td>Ana Oliveira</td><td>(11) 98888-5678</td><td>Guarulhos</td><td>Vidraçaria</td><td><span class="badge g">Ativo</span></td></tr>
-                    <tr><td>Roberto Gomes</td><td>(11) 97777-9012</td><td>Osasco</td><td>Serralheria</td><td><span class="badge a">Em negociação</span></td></tr>
-                    <tr><td>Marcos Ferreira</td><td>(11) 96666-3456</td><td>Santo André</td><td>Marmoraria</td><td><span class="badge g">Ativo</span></td></tr>
-                    <tr><td>Juliana Pereira</td><td>(11) 95555-7890</td><td>São Bernardo</td><td>Marcenaria</td><td><span class="badge b">Aguardando</span></td></tr>
-                    <tr><td>Paulo Mendes</td><td>(11) 94444-2345</td><td>Mauá</td><td>Serralheria</td><td><span class="badge r">Inativo</span></td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- ORÇAMENTO -->
-            <div class="m-screen" id="screen-orcamento">
-              <div class="orc-form">
-                <div class="orc-form-title">📋 Novo Orçamento — OS #2024-089</div>
-                <div class="orc-row">
-                  <div class="orc-field"><label>Cliente</label><select><option>Carlos Silva</option><option>Ana Oliveira</option></select></div>
-                  <div class="orc-field"><label>Tipo de Serviço</label><select><option>Marcenaria</option><option>Marmoraria</option></select></div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Gestão de Projetos</h3>
+                    <p>Acompanhe todas as etapas dos seus projetos, desde o orçamento até a entrega final.</p>
                 </div>
-                <div class="orc-row">
-                  <div class="orc-field"><label>Data de entrega</label><input type="text" value="25/04/2025" readonly></div>
-                  <div class="orc-field"><label>Responsável</label><input type="text" value="João Técnico" readonly></div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Aplicativo Móvel</h3>
+                    <p>Acesse informações importantes e atualize o status dos projetos direto do canteiro de obras.</p>
                 </div>
-                <div class="orc-items">
-                  <div class="orc-items-header"><span class="orc-items-title">Itens do orçamento</span><button class="orc-add-btn">+ Item</button></div>
-                  <table class="m-table" style="background:#fff;">
-                    <thead><tr><th>Descrição</th><th>Qtd</th><th>Un.</th><th>Valor unit.</th><th>Total</th></tr></thead>
-                    <tbody>
-                      <tr><td>MDF 15mm Branco</td><td>8</td><td>chapa</td><td>R$ 120,00</td><td>R$ 960,00</td></tr>
-                      <tr><td>Mão de obra carpinteiro</td><td>16</td><td>h</td><td>R$ 85,00</td><td>R$ 1.360,00</td></tr>
-                      <tr><td>Dobradiças Blum</td><td>24</td><td>un</td><td>R$ 18,50</td><td>R$ 444,00</td></tr>
-                    </tbody>
-                  </table>
-                  <div class="orc-total-row"><span class="orc-total-lbl">Total do orçamento:</span><span class="orc-total-val">R$ 2.764,00</span></div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Controle Financeiro</h3>
+                    <p>Gerencie contas a pagar, receber e tenha relatórios financeiros detalhados em poucos cliques.</p>
                 </div>
-                <div class="orc-actions"><button class="orc-btn secondary">Cancelar</button><button class="orc-btn primary">💾 Salvar e Enviar PDF</button></div>
-              </div>
-            </div>
-
-            <!-- USUÁRIOS -->
-            <div class="m-screen" id="screen-usuarios">
-              <div class="m-table-wrap" style="margin-bottom:.6rem">
-                <div class="m-table-header"><span class="m-table-title">👤 Usuários do Sistema</span><button class="m-table-btn">+ Novo Usuário</button></div>
-              </div>
-              <div class="user-card-grid">
-                <div class="user-card"><div class="user-av" style="background:#1b2d4a">JM</div><div><div class="user-name">João Matos</div><div class="user-role">Administrador</div><div class="user-status"><span class="badge g">Online</span></div></div></div>
-                <div class="user-card"><div class="user-av" style="background:#b8762a">CS</div><div><div class="user-name">Carlos Santos</div><div class="user-role">Vendedor</div><div class="user-status"><span class="badge g">Online</span></div></div></div>
-                <div class="user-card"><div class="user-av" style="background:#4a9fba">MR</div><div><div class="user-name">Maria Rodrigues</div><div class="user-role">Financeiro</div><div class="user-status"><span class="badge a">Ausente</span></div></div></div>
-                <div class="user-card"><div class="user-av" style="background:#3da668">PL</div><div><div class="user-name">Pedro Lima</div><div class="user-role">Técnico</div><div class="user-status"><span class="badge r">Offline</span></div></div></div>
-              </div>
-              <div class="m-table-wrap">
-                <table class="m-table">
-                  <thead><tr><th>Usuário</th><th>Perfil</th><th>Último acesso</th><th>Status</th></tr></thead>
-                  <tbody>
-                    <tr><td>João Matos</td><td>Admin</td><td>Agora</td><td><span class="badge g">Ativo</span></td></tr>
-                    <tr><td>Carlos Santos</td><td>Vendedor</td><td>Há 5 min</td><td><span class="badge g">Ativo</span></td></tr>
-                    <tr><td>Maria Rodrigues</td><td>Financeiro</td><td>Há 2h</td><td><span class="badge a">Ausente</span></td></tr>
-                    <tr><td>Pedro Lima</td><td>Técnico</td><td>Ontem 17:30</td><td><span class="badge r">Offline</span></td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- SUPORTE -->
-            <div class="m-screen" id="screen-suporte">
-              <div class="suporte-wrap">
-                <div class="suporte-card"><div class="suporte-title">📞 Central de Suporte</div><div class="suporte-text">Nosso time está disponível de segunda a sexta, das 8h às 18h.<br>WhatsApp: (11) 9 9999-9999 · E-mail: suporte@sistemaos.com.br</div></div>
-                <div class="suporte-chat">
-                  <div class="suporte-chat-header"><div class="suporte-chat-dot"></div><span class="suporte-chat-title">Chat ao vivo — Agente disponível</span></div>
-                  <div class="chat-msgs">
-                    <div class="chat-msg agent"><div class="chat-av" style="background:#1b2d4a;color:#fff;font-size:.5rem;">S</div><div class="chat-bubble">Olá! Como posso ajudar você hoje?</div></div>
-                    <div class="chat-msg user"><div class="chat-av" style="background:#e8edf2;color:#1b2d4a;font-size:.5rem;">V</div><div class="chat-bubble">Como faço para emitir um orçamento em PDF?</div></div>
-                    <div class="chat-msg agent"><div class="chat-av" style="background:#1b2d4a;color:#fff;font-size:.5rem;">S</div><div class="chat-bubble">No módulo de Orçamento, clique em "Salvar e Enviar PDF". O arquivo é gerado automaticamente com sua logo!</div></div>
-                  </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Gestão de Clientes</h3>
+                    <p>Mantenha histórico completo de clientes, projetos e interações para fortalecer relacionamentos.</p>
                 </div>
-                <div class="suporte-card"><div class="suporte-title">📚 Base de Conhecimento</div><div class="suporte-text">Acesse tutoriais, vídeos e manuais completos do sistema.</div><a class="suporte-link" href="#">Ver documentação →</a></div>
-              </div>
             </div>
-
-          </div><!-- m-main -->
-        </div><!-- m-body -->
-
-        <div class="m-statusbar">
-          <span class="m-sb">PTech Solutions [PRO]</span>
-          <span class="m-sb">v2.0.9</span>
         </div>
-      </div>
-    </div>
+    </section>
 
-  </div>
-</section>
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>O que nossos clientes dizem</h2>
+                <p>Empresas de diversos segmentos já transformaram seu negócio com o SistemaOS</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Desde que implementamos o SistemaOS, reduzimos em 35% o tempo de elaboração de orçamentos e praticamente eliminamos erros de cálculo. Nossa produtividade aumentou significativamente."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Carlos Silva">
+                        <div class="author-info">
+                            <h4>Carlos Silva</h4>
+                            <p>Marcenaria Silva & Filhos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "O controle de estoque do sistema nos ajudou a reduzir desperdícios e organizar melhor nossos materiais. Além disso, o suporte é excelente e sempre nos ajuda com qualquer dúvida."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Ana Oliveira">
+                        <div class="author-info">
+                            <h4>Ana Oliveira</h4>
+                            <p>Vidraçaria Cristal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Como serralheiro, eu precisava de um sistema que entendesse as particularidades do meu negócio. O SistemaOS foi perfeito, adaptando-se às necessidades específicas da minha empresa."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Roberto Gomes">
+                        <div class="author-info">
+                            <h4>Roberto Gomes</h4>
+                            <p>Serralheria Gomes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- REST OF PAGE -->
-<section class="sec features-sec" id="features">
-  <div class="w">
-    <div class="feat-header r"><div><div class="sec-tag">Funcionalidades</div><h2 class="sec-title">Tudo que você precisa<br><span class="light">em um único sistema.</span></h2></div><p class="sec-sub">Sem planilhas, sem caderneta. Controle total da sua empresa a partir de qualquer dispositivo.</p></div>
-    <div class="features-grid r" style="transition-delay:.12s">
-      <div class="feat"><div class="feat-n">01</div><div class="feat-ico">📋</div><h3>Orçamentos em minutos</h3><p>Calcule materiais e mão de obra automaticamente. Envie PDFs e feche mais negócios.</p></div>
-      <div class="feat"><div class="feat-n">02</div><div class="feat-ico">📦</div><h3>Estoque sob controle</h3><p>Inventário em tempo real com alertas de reposição. Nunca mais pare uma obra por falta de material.</p></div>
-      <div class="feat"><div class="feat-n">03</div><div class="feat-ico">🔄</div><h3>Projetos do início ao fim</h3><p>Acompanhe cada etapa. Clientes informados, equipe alinhada, entrega sempre no prazo.</p></div>
-      <div class="feat"><div class="feat-n">04</div><div class="feat-ico">📱</div><h3>App para o campo</h3><p>Acesse tudo pelo celular. Atualize o status de obras em tempo real, mesmo longe do escritório.</p></div>
-      <div class="feat"><div class="feat-n">05</div><div class="feat-ico">💰</div><h3>Financeiro descomplicado</h3><p>Contas a pagar e receber, fluxo de caixa e relatórios. Saiba exatamente para onde vai cada centavo.</p></div>
-      <div class="feat"><div class="feat-n">06</div><div class="feat-ico">👥</div><h3>Histórico de clientes</h3><p>Projetos anteriores, interações e preferências num só lugar. Relacionamentos que geram indicações.</p></div>
-    </div>
-  </div>
-</section>
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-title">
+                <h2>Escolha o plano ideal para o seu negócio</h2>
+                <p>Soluções pensadas para empresas de todos os tamanhos</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Básico</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$199<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Gestão de orçamentos</li>
+                        <li>Controle básico de estoque</li>
+                        <li>Gerenciamento de clientes</li>
+                        <li>Acesso para 2 usuários</li>
+                        <li>Suporte por e-mail</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+                <div class="pricing-card popular">
+                    <h3>Profissional</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$349<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Tudo do plano Básico</li>
+                        <li>Gestão financeira completa</li>
+                        <li>Gestão de projetos</li>
+                        <li>Aplicativo móvel</li>
+                        <li>Acesso para 5 usuários</li>
+                        <li>Suporte prioritário</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Empresarial</h3>
+                    <div class="price" style="filter: blur(8px); user-select: none;">R$599<span>/mês</span></div>
+                    <ul class="features-list">
+                        <li>Tudo do plano Profissional</li>
+                        <li>Integrações personalizadas</li>
+                        <li>Relatórios avançados</li>
+                        <li>Acesso ilimitado de usuários</li>
+                        <li>Gestor de conta dedicado</li>
+                        <li>Treinamento personalizado</li>
+                    </ul>
+                    <a href="#contact" class="cta-btn">Começar agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="sec seg-sec" id="segmentos">
-  <div class="w">
-    <div class="r"><div class="sec-tag">Segmentos</div><h2 class="sec-title">Feito para o seu negócio,<br><span class="light">não para qualquer negócio.</span></h2></div>
-    <div class="seg-row r" style="transition-delay:.12s">
-      <div class="seg-card active"><div class="seg-ico">🪵</div><div class="seg-name">Marcenaria</div><div class="seg-desc">Gerencie cortes, chapas, ferragens e entrega de móveis com precisão milimétrica.</div><div class="seg-arr">Saiba mais →</div></div>
-      <div class="seg-card"><div class="seg-ico">🪨</div><div class="seg-name">Marmoraria</div><div class="seg-desc">Controle chapas de pedra, polimento e entrega de bancadas com total organização.</div><div class="seg-arr">Saiba mais →</div></div>
-      <div class="seg-card"><div class="seg-ico">🔷</div><div class="seg-name">Vidraçaria</div><div class="seg-desc">Gerencie temperados, laminados e medições de obra em tempo real.</div><div class="seg-arr">Saiba mais →</div></div>
-      <div class="seg-card"><div class="seg-ico">⚙️</div><div class="seg-name">Serralheria</div><div class="seg-desc">Tubos, perfis, portões e grades. Controle total para a sua serralheria.</div><div class="seg-arr">Saiba mais →</div></div>
-    </div>
-  </div>
-</section>
+    <section class="cta" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: rgb(211, 211, 211);">Transforme sua empresa hoje mesmo</h2>
+                <p style="color: rgb(190, 190, 190);">Preencha o formulário abaixo e nossa equipe entrará em contato para uma demonstração gratuita</p>
+            </div>
+            <div class="contact-form">
+                <form id="lead-form">
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" class="form-control" placeholder="Seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Empresa</label>
+                        <input type="text" id="company" class="form-control" placeholder="Nome da sua empresa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">WhatsApp</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Tipo de negócio</label>
+                        <select id="business" class="form-control" required>
+                            <option value="" disabled selected>Selecione seu tipo de negócio</option>
+                            <option value="marcenaria">Marcenaria</option>
+                            <option value="marmoraria">Marmoraria</option>
+                            <option value="vidracaria">Vidraçaria</option>
+                            <option value="serralheria">Serralheria</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Solicitar demonstração gratuita</button>
+                </form>
+                <div class="contact-info">
+                    <p>Ou entre em contato diretamente:</p>
+                    <p>contato@sistemaos.com.br | (11) 9999-9999</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="sec testi-sec" id="depoimentos">
-  <div class="w">
-    <div class="r"><div class="sec-tag">Depoimentos</div><h2 class="sec-title">O que dizem quem<br><span class="light">já usa todo dia.</span></h2></div>
-    <div class="testi-grid r" style="transition-delay:.12s">
-      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Reduzimos em 35% o tempo de elaboração de orçamentos. Os erros de cálculo praticamente sumiram."</p><div class="testi-author"><div class="testi-av-outer">CS</div><div><div class="testi-name">Carlos Silva</div><div class="testi-role">Marcenaria Silva &amp; Filhos</div></div></div></div>
-      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"O controle de estoque eliminou o desperdício de material. Agora sei exatamente o que tenho e o que preciso repor."</p><div class="testi-author"><div class="testi-av-outer">AO</div><div><div class="testi-name">Ana Oliveira</div><div class="testi-role">Vidraçaria Cristal</div></div></div></div>
-      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Fechei 3 contratos a mais esse mês por causa da agilidade nos orçamentos. O cliente recebe o PDF na hora."</p><div class="testi-author"><div class="testi-av-outer">MF</div><div><div class="testi-name">Marcos Ferreira</div><div class="testi-role">Marmoraria Premium</div></div></div></div>
-    </div>
-  </div>
-</section>
+    <footer>
+        <div class="footer-content">
+            <div class="logo">Sistema<span>OS</span></div>
+            <ul class="footer-links">
+                <li><a href="#hero">Início</a></li>
+                <li><a href="#features">Funcionalidades</a></li>
+                <li><a href="#testimonials">Depoimentos</a></li>
+                <li><a href="#pricing">Planos</a></li>
+                <li><a href="#contact">Contato</a></li>
+                <li><a href="#">Política de Privacidade</a></li>
+                <li><a href="#">Termos de Uso</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">YouTube</a>
+            </div>
+            <p class="copyright">© 2025 SistemaOS. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
-<section class="sec pricing-sec" id="pricing">
-  <div class="w">
-    <div class="r"><div class="sec-tag">Planos</div><h2 class="sec-title">Investimento simples.<br><span class="light">Resultado real.</span></h2><p class="sec-sub">Sem taxa de adesão. Sem fidelidade. Cancele quando quiser. Suporte humano incluso em todos os planos.</p></div>
-    <div class="pricing-grid r" style="transition-delay:.12s">
-      <div class="plan"><div class="plan-name">Básico</div><div class="plan-price">R$ 199</div><div class="plan-period">por mês · consulte condições</div><a href="#contact" class="plan-cta outline">Começar grátis</a><ul class="plan-feats"><li>Gestão completa de orçamentos</li><li>Controle básico de estoque</li><li>Gerenciamento de clientes</li><li>Até 2 usuários</li><li>Suporte por e-mail</li></ul></div>
-      <div class="plan featured"><span class="plan-badge">Mais popular</span><div class="plan-name">Profissional</div><div class="plan-price">R$ 349</div><div class="plan-period">por mês · consulte condições</div><a href="#contact" class="plan-cta solid">Começar grátis</a><ul class="plan-feats"><li>Tudo do plano Básico</li><li>Gestão financeira completa</li><li>Acompanhamento de projetos</li><li>Aplicativo móvel</li><li>Até 5 usuários</li><li>Suporte prioritário via WhatsApp</li></ul></div>
-      <div class="plan"><div class="plan-name">Empresarial</div><div class="plan-price">R$ 599</div><div class="plan-period">por mês · consulte condições</div><a href="#contact" class="plan-cta outline">Falar com vendas</a><ul class="plan-feats"><li>Tudo do Profissional</li><li>Usuários ilimitados</li><li>Relatórios avançados</li><li>Integrações personalizadas</li><li>Gerente de conta dedicado</li><li>Treinamento para equipe</li></ul></div>
-    </div>
-  </div>
-</section>
+    <script>
 
-<section class="cta-sec">
-  <div style="max-width:700px;margin:0 auto;position:relative;z-index:1;" class="r">
-    <div class="sec-tag" style="justify-content:center;margin-bottom:1.5rem">14 dias grátis, sem cartão</div>
-    <h2 class="cta-title">Sua empresa merece<br><span class="accent">funcionar bem.</span></h2>
-    <p class="cta-sub">Comece agora e veja a diferença em menos de uma semana.</p>
-    <div style="display:flex;justify-content:center"><a href="#contact" class="btn-p" style="font-size:.9rem;padding:1rem 2.5rem">Solicitar demonstração gratuita <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-  </div>
-</section>
-
-<section class="sec contact-sec" id="contact">
-  <div class="w">
-    <div class="contact-grid">
-      <div class="ci-head r"><div class="sec-tag">Contato</div><h2><span class="light">Fale com</span><br>nossa equipe.</h2><p>Preencha o formulário e entraremos em contato em até 24 horas para uma demonstração personalizada, sem compromisso.</p><div class="ci-item"><div class="ci-ico">📧</div><div class="ci-t"><strong>E-mail</strong><span>contato@sistemaos.com.br</span></div></div><div class="ci-item"><div class="ci-ico">💬</div><div class="ci-t"><strong>WhatsApp</strong><span>(11) 9 9999-9999</span></div></div><div class="ci-item"><div class="ci-ico">🕐</div><div class="ci-t"><strong>Atendimento</strong><span>Segunda a sexta, 8h às 18h</span></div></div></div>
-      <div class="form-wrap r" style="transition-delay:.2s">
-<form id="lead-form">
-  <div class="form-row">
-    <div class="fg">
-      <label>Nome completo</label>
-      <input type="text" id="name" class="fc" placeholder="Seu nome" required>
-    </div>
-    <div class="fg">
-      <label>Empresa</label>
-      <input type="text" id="company" class="fc" placeholder="Nome da empresa" required>
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="fg">
-      <label>E-mail</label>
-      <input type="email" id="email" class="fc" placeholder="seu@email.com" required>
-    </div>
-    <div class="fg">
-      <label>WhatsApp</label>
-      <input type="tel" id="phone" class="fc" placeholder="(00) 00000-0000" required>
-    </div>
-  </div>
-
-  <div class="fg">
-    <label>Segmento</label>
-    <select id="business" class="fc" required>
-      <option value="" disabled selected>Selecione</option>
-      <option value="marcenaria">Marcenaria</option>
-      <option value="marmoraria">Marmoraria</option>
-      <option value="vidracaria">Vidraçaria</option>
-      <option value="serralheria">Serralheria</option>
-      <option value="outro">Outro</option>
-    </select>
-  </div>
-
-  <div class="fg">
-    <label>Mensagem (opcional)</label>
-    <textarea id="message" class="fc" rows="3"></textarea>
-  </div>
-
-  <button type="submit" class="submit" id="sub-btn">
-    Solicitar demonstração gratuita
-  </button>
-</form>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <a href="#hero" class="logo-mark" style="font-size:1.1rem;"><span class="lm-s">Sistema </span><span class="lm-o">O$</span></a>
-  <div class="foot-links"><a href="#features">Funcionalidades</a><a href="#pricing">Planos</a><a href="#contact">Contato</a><a href="#">Privacidade</a><a href="#">Termos</a></div>
-  <span class="foot-copy">© 2025 PTech Solutions · Sistema OS</span>
-</footer>
-
-<script>
-/* ══════════════════════════════════════════════
-   AMBIENT CANVAS — visible, elegant, thematic
-   Elementos: hexágonos, engrenagens, réguas,
-   serras, veios de mármore, shards de vidro
-══════════════════════════════════════════════ */
-(function(){
-  const cv = document.getElementById('ambient-canvas');
-  const cx = cv.getContext('2d');
-  let W, H;
-  const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
-  resize(); window.addEventListener('resize', resize);
-
-  function hex(x,y,r){
-    cx.beginPath();
-    for(let i=0;i<6;i++){const a=(Math.PI/3)*i-Math.PI/6; i?cx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a)):cx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a));}
-    cx.closePath();
-  }
-  function gear(x,y,r,n,angle){
-    cx.save(); cx.translate(x,y); cx.rotate(angle);
-    const ir=r*.6, th=r*.28;
-    cx.beginPath();
-    for(let i=0;i<n;i++){
-      const a0=(Math.PI*2/n)*i, a1=a0+Math.PI/n*.55, a2=a0+Math.PI/n*1.45, a3=a0+Math.PI*2/n;
-      cx.lineTo((r+th)*Math.cos(a0),(r+th)*Math.sin(a0));
-      cx.lineTo((r+th)*Math.cos(a1),(r+th)*Math.sin(a1));
-      cx.lineTo(r*Math.cos(a2),r*Math.sin(a2));
-      cx.lineTo(r*Math.cos(a3),r*Math.sin(a3));
-    }
-    cx.closePath(); cx.stroke();
-    cx.beginPath(); cx.arc(0,0,ir,0,Math.PI*2); cx.stroke();
-    cx.beginPath(); cx.arc(0,0,r*.2,0,Math.PI*2); cx.stroke();
-    cx.restore();
-  }
-  function ruler(x,y,w,angle){
-    cx.save(); cx.translate(x,y); cx.rotate(angle);
-    cx.beginPath(); cx.moveTo(-w/2,0); cx.lineTo(w/2,0); cx.stroke();
-    for(let i=0;i<=10;i++){
-      const tx=-w/2+(w/10)*i, th=i%5===0?8:4;
-      cx.beginPath(); cx.moveTo(tx,0); cx.lineTo(tx,-th); cx.stroke();
-    }
-    cx.restore();
-  }
-  function saw(x,y,w,angle){
-    cx.save(); cx.translate(x,y); cx.rotate(angle);
-    const n=14, s=w/n;
-    cx.beginPath(); cx.moveTo(-w/2,0);
-    for(let i=0;i<n;i++){ const bx=-w/2+s*i; cx.lineTo(bx+s*.5,-7); cx.lineTo(bx+s,0); }
-    cx.stroke();
-    cx.restore();
-  }
-  function vein(x,y,len,angle){
-    cx.save(); cx.translate(x,y); cx.rotate(angle);
-    cx.beginPath(); cx.moveTo(-len/2,0);
-    cx.bezierCurveTo(-len/4,-10, len/4,10, len/2,0); cx.stroke();
-    cx.restore();
-  }
-  function shard(x,y,r,angle){
-    cx.save(); cx.translate(x,y); cx.rotate(angle);
-    cx.beginPath(); cx.moveTo(0,-r); cx.lineTo(r*.86,r*.5); cx.lineTo(-r*.86,r*.5); cx.closePath(); cx.stroke();
-    cx.beginPath(); cx.moveTo(0,-r*.5); cx.lineTo(r*.35,r*.22); cx.stroke();
-    cx.restore();
-  }
-
-  const TYPES = ['hex','gear','ruler','saw','vein','shard'];
-  const mk = () => ({
-    type: TYPES[Math.floor(Math.random()*TYPES.length)],
-    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
-    size: 22+Math.random()*42,
-    angle: Math.random()*Math.PI*2,
-    aspd: (Math.random()-.5)*.004,
-    vx: (Math.random()-.5)*.2,
-    vy: (Math.random()-.5)*.2,
-    /* ALPHA raised so they're clearly visible */
-    alpha: 0.12 + Math.random()*0.18,
-    phase: Math.random()*Math.PI*2,
-    pspd: .3+Math.random()*.4,
-  });
-
-function showAlert(message, type = "success") {
-  const alert = document.createElement("div");
-
-  alert.textContent = message;
-
-  alert.style.position = "fixed";
-  alert.style.top = "20px";
-  alert.style.right = "20px";
-  alert.style.padding = "15px 20px";
-  alert.style.borderRadius = "8px";
-  alert.style.color = "white";
-  alert.style.fontWeight = "bold";
-  alert.style.zIndex = "9999";
-  alert.style.boxShadow = "0 5px 20px rgba(0,0,0,0.2)";
-  alert.style.transition = "all .3s ease";
-
-  if (type === "error") {
-    alert.style.background = "#dc2626";
-  } else if (type === "warning") {
-    alert.style.background = "#f59e0b";
-  } else {
-    alert.style.background = "#16a34a";
-  }
-
-  document.body.appendChild(alert);
-
-  setTimeout(() => {
-    alert.style.opacity = "0";
-    setTimeout(() => alert.remove(), 300);
-  }, 3000);
-}
-  
-  const pts = Array.from({length:32}, mk);
-  let t = 0;
-
-  function frame(){
-    t += .016;
-    cx.clearRect(0,0,W,H);
-    pts.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.angle+=p.aspd;
-      if(p.x<-80) p.x=W+80; if(p.x>W+80) p.x=-80;
-      if(p.y<-80) p.y=H+80; if(p.y>H+80) p.y=-80;
-      const a = p.alpha*(0.65+0.35*Math.sin(t*p.pspd+p.phase));
-      cx.strokeStyle = `rgba(184,118,42,${a})`;
-      cx.lineWidth = 1.1;
-      switch(p.type){
-        case 'hex':  hex(p.x,p.y,p.size); cx.stroke(); break;
-        case 'gear': gear(p.x,p.y,p.size*.55,8,p.angle); break;
-        case 'ruler':ruler(p.x,p.y,p.size*2.2,p.angle); break;
-        case 'saw':  saw(p.x,p.y,p.size*2,p.angle); break;
-        case 'vein': vein(p.x,p.y,p.size*2,p.angle); break;
-        case 'shard':shard(p.x,p.y,p.size*.7,p.angle); break;
-      }
-    });
-    requestAnimationFrame(frame);
-  }
-  frame();
-})();
-
-/* ══════════════════════════════════════════════
-   MOCKUP — SCREEN SWITCHER
-══════════════════════════════════════════════ */
-const screenLabels = {
-  home:      '🏠 Home',
-  lembretes: '📋 Lembretes',
-  agenda:    '📅 Agenda',
-  clientes:  '👥 Clientes',
-  orcamento: '🧮 Orçamento',
-  usuarios:  '👤 Usuários',
-  suporte:   '🎧 Suporte',
-};
-
-document.querySelectorAll('.m-icon').forEach(icon => {
-  icon.addEventListener('click', () => {
-    const screen = icon.dataset.screen;
-    // sidebar highlight
-    document.querySelectorAll('.m-icon').forEach(i => i.classList.remove('active'));
-    icon.classList.add('active');
-    // screens
-    document.querySelectorAll('.m-screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-'+screen).classList.add('active');
-    // tab label
-    document.getElementById('active-tab-label').textContent = screenLabels[screen];
-  });
-});
-
-/* reminder toggle */
-document.querySelectorAll('.reminder-item').forEach(item => {
-  item.addEventListener('click', () => item.classList.toggle('done'));
-});
-
-/* ══════════════════════════════════════════════
-   NAV DROPDOWNS
-══════════════════════════════════════════════ */
-document.querySelectorAll('.m-menu-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    const key = btn.dataset.menu;
-    const dd  = document.getElementById('dd-'+key);
-    const isOpen = dd.classList.contains('open');
-    document.querySelectorAll('.m-dropdown').forEach(d=>d.classList.remove('open'));
-    document.querySelectorAll('.m-menu-btn').forEach(b=>b.classList.remove('open'));
-    if(!isOpen){ dd.classList.add('open'); btn.classList.add('open'); }
-  });
-});
-document.addEventListener('click', () => {
-  document.querySelectorAll('.m-dropdown').forEach(d=>d.classList.remove('open'));
-  document.querySelectorAll('.m-menu-btn').forEach(b=>b.classList.remove('open'));
-});
-
-/* ══════════════════════════════════════════════
-   BAR ANIMATION
-══════════════════════════════════════════════ */
-document.querySelectorAll('.m-bar').forEach((b,i) => {
-  const h = b.dataset.h; b.style.height='0';
-  setTimeout(()=>b.style.height=h, 1000+i*100);
-});
-
-/* ══════════════════════════════════════════════
-   NAV / GENERAL
-══════════════════════════════════════════════ */
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>40));
-document.getElementById('ham').addEventListener('click',()=>document.getElementById('mob-menu').classList.add('open'));
-document.getElementById('mob-close').addEventListener('click',()=>document.getElementById('mob-menu').classList.remove('open'));
-document.querySelectorAll('.mob-link').forEach(a=>a.addEventListener('click',()=>document.getElementById('mob-menu').classList.remove('open')));
-document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
-const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');}),{threshold:.1});
-document.querySelectorAll('.r').forEach(el=>obs.observe(el));
-document.querySelectorAll('.seg-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.seg-card').forEach(x=>x.classList.remove('active'));c.classList.add('active');}));
-document.getElementById('lead-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const btn = document.getElementById('sub-btn');
-
-  const email = document.getElementById('email').value;
-
-  const data = {
-    name: document.getElementById('name').value,
-    companyName: document.getElementById('company').value,
-    email: email,
-    whatsapp: document.getElementById('phone').value,
-    businessType: document.getElementById('business').value,
-    message: document.getElementById('message').value
-  };
-
-  // 🔥 validação simples
-  if (!email.includes("@")) {
-    showAlert("E-mail inválido", "error");
-    return;
-  }
-
-  try {
-    btn.textContent = "Enviando...";
-    btn.disabled = true;
-
-    const response = await fetch('https://scalable-giuliana-uninterestedly.ngrok-free.dev/auth/pre-register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
+    const backgroundImages = {
+        "marcenaria": "https://images.unsplash.com/photo-1683115096447-5d01c11d3ead?q=80&w=1752&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "marmoraria": "https://img.freepik.com/fotos-gratis/tiler-trabalhando-na-renovacao-do-apartamento_23-2149278571.jpg?t=st=1745348613~exp=1745352213~hmac=819f6c5a2aef3cfacbee1f1b0bbd32c4f238dc27bd5b19a6c1f8be9b07e4ba7d&w=996",
+        "vidraçaria": "https://img.freepik.com/fotos-gratis/oficina-de-trabalho-criativo-de-artesao_23-2148970787.jpg?t=st=1745348420~exp=1745352020~hmac=6a3c1bc28667591f7c6bb223966b26110f57bae6e4ce2102cc19784bf0cf448f&w=996",
+        "serralheria": "https://img.freepik.com/fotos-gratis/dois-trabalhadores-fazendo-portoes-na-ferraria_7502-9153.jpg?t=st=1745348189~exp=1745351789~hmac=2810635916b320200812359deac087d2f92eba76e35fe1ad361e0dfe6c4c09f9&w=996"
+    };
 
 
-if (json.code === 403) {
-  showAlert"Não foi possivel realizar o cadastro", "warning");
-  return;
-}
+     // Script para alternar as palavras com animação
+     const words = ["marcenaria", "marmoraria", "vidraçaria", "serralheria"];
+    const segmentText = document.getElementById('segment-text');
+    let currentIndex = 0;
     
-    if (response.ok) {
-      showAlert("Verifique seu e-mail para ativar sua conta 🚀", "success");
-
-      btn.textContent = "✓ Enviado com sucesso!";
-      btn.style.background = "#16a34a";
-
-      this.reset();
-
-    } else {
-      throw new Error();
+    function changeText() {
+        // Efeito de fade out
+        segmentText.classList.add('fade-out');
+        
+        // Após completar o fade out, troca o texto e faz o fade in
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % words.length;
+            const currentWord = words[currentIndex];
+            
+            // Atualiza o texto
+            segmentText.textContent = currentWord;
+            segmentText.classList.remove('fade-out');
+            segmentText.classList.add('fade-in');
+            
+            // Atualiza a imagem de fundo com fade
+            const heroSection = document.querySelector('.hero');
+            heroSection.style.opacity = '0.7'; // Fade out suave da seção inteira
+            
+            setTimeout(() => {
+            // Muda a imagem de fundo
+            heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${backgroundImages[currentWord]}')`;
+            heroSection.style.opacity = '1'; // Fade in
+            }, 300);
+            
+            // Remove a classe fade-in após a animação para o próximo ciclo
+            setTimeout(() => {
+            segmentText.classList.remove('fade-in');
+            }, 500);
+        }, 500);
     }
 
-  } catch (err) {
-    showAlert("Erro de conexão com servidor", "error");
+    // Defina a imagem inicial quando a página carregar
+    window.addEventListener('DOMContentLoaded', () => {
+        const heroSection = document.querySelector('.hero');
+        heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${backgroundImages["marcenaria"]}')`;
+    });
+    
+    // Muda a palavra a cada 3 segundos (incluindo tempo da animação)
+    setInterval(changeText, 3000);
 
-  } finally {
-    setTimeout(() => {
-      btn.textContent = "Solicitar demonstração gratuita";
-      btn.style.background = "";
-      btn.disabled = false;
-    }, 4000);
-  }
+        // Simples script para envio do formulário
+document.getElementById('lead-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById('name').value,
+        companyName: document.getElementById('company').value,
+        email: document.getElementById('email').value,
+        whatsapp: document.getElementById('phone').value,
+        businessType: document.getElementById('business').value
+    };
+
+    try {
+        const response = await fetch('https://scalable-giuliana-uninterestedly.ngrok-free.dev/auth/pre-register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('Verifique seu e-mail para ativar sua conta 🚀');
+            this.reset();
+        } else {
+            alert('Erro ao enviar. Tente novamente.');
+        }
+
+    } catch (err) {
+        alert('Erro de conexão com o servidor.');
+    }
 });
-</script>
+
+        // Scroll suave para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Menu mobile
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
 </body>
 </html>
