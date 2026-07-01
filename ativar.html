@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ativar Conta - Sistema OS</title>
+<meta name="description" content="Ative sua conta do Sistema OS e comece a gerenciar sua empresa.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{--navy:#1b2d4a;--navy2:#243859;--navy3:#0f1d30;--gold:#b8762a;--gold2:#d4932f;--chalk:#f0ece4;--muted:#8a9bb0;--green:#22c55e;--green2:#16a34a;--red:#dc2626;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:var(--navy3);color:var(--chalk);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:1rem;}
+
+.card{background:var(--navy);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:420px;text-align:center;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,118,42,.4),transparent);}
+
+.logo{display:inline-flex;align-items:baseline;gap:.1em;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:-.02em;margin-bottom:1.5rem;text-decoration:none;}
+.logo span{color:var(--chalk);} .logo em{color:var(--gold2);font-style:normal;}
+
+h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.3rem;font-weight:700;color:var(--chalk);margin-bottom:.3rem;}
+.subtitle{font-size:.85rem;color:var(--muted);margin-bottom:1.8rem;}
+
+.field{margin-bottom:1rem;text-align:left;}
+.field label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+
+.input-wrap{position:relative;}
+.input-wrap input{width:100%;padding:.75rem 2.8rem .75rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--chalk);font-size:.9rem;font-family:inherit;transition:border-color .2s,background .2s;}
+.input-wrap input:focus{outline:none;border-color:var(--gold);background:rgba(184,118,42,.05);}
+.input-wrap input::placeholder{color:rgba(138,155,176,.5);}
+
+.toggle-pw{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:.2rem;line-height:1;}
+.toggle-pw:hover{color:var(--chalk);}
+
+.strength{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:.4rem;overflow:hidden;}
+.strength-bar{height:100%;width:0;border-radius:2px;transition:width .3s,background .3s;}
+
+.pw-hint{font-size:.72rem;color:var(--muted);margin-top:.35rem;}
+
+.btn{width:100%;padding:.85rem;background:var(--green);border:none;color:#fff;font-weight:700;font-size:.875rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:50px;transition:background .25s,transform .2s,box-shadow .25s;margin-top:.5rem;font-family:inherit;}
+.btn:hover{background:var(--green2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,197,94,.25);}
+.btn:disabled{background:#64748b;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.msg{margin-top:1.2rem;font-size:.85rem;min-height:1.4rem;line-height:1.4;}
+.msg.error{color:var(--red);}
+.msg.success{color:var(--green);}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.back-link{display:inline-block;margin-top:1.5rem;font-size:.8rem;color:var(--muted);text-decoration:none;transition:color .2s;}
+.back-link:hover{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="card" role="main">
+  <a href="index.html" class="logo"><span>Sistema </span><em>O$</em></a>
+  <h2>Ativar sua conta</h2>
+  <p class="subtitle">Crie uma senha segura para acessar o sistema.</p>
+
+  <div class="field">
+    <label for="password">Senha</label>
+    <div class="input-wrap">
+      <input type="password" id="password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6">
+      <button type="button" class="toggle-pw" id="toggle-pw" aria-label="Mostrar senha" tabindex="-1">👁</button>
+    </div>
+    <div class="strength"><div class="strength-bar" id="strength-bar"></div></div>
+    <div class="pw-hint" id="pw-hint"></div>
+  </div>
+
+  <div class="field">
+    <label for="confirmPassword">Confirmar senha</label>
+    <div class="input-wrap">
+      <input type="password" id="confirmPassword" placeholder="Repita a senha" required autocomplete="new-password" minlength="6">
+      <button type="button" class="toggle-pw" id="toggle-pw2" aria-label="Mostrar confirmação" tabindex="-1">👁</button>
+    </div>
+  </div>
+
+  <button class="btn" id="btn" disabled>Ativar Conta</button>
+
+  <div class="msg" id="msg" aria-live="polite"></div>
+
+  <a href="index.html" class="back-link">← Voltar para o início</a>
+</div>
+
+<script>
+(function(){
+  var API_BASE=localStorage.getItem('api_base')||window.location.origin;
+  var urlParams=new URLSearchParams(window.location.search);
+  var token=urlParams.get('token');
+  var button=document.getElementById('btn');
+  var msg=document.getElementById('msg');
+  var password=document.getElementById('password');
+  var confirm=document.getElementById('confirmPassword');
+  var strengthBar=document.getElementById('strength-bar');
+  var pwHint=document.getElementById('pw-hint');
+
+  if(!token){
+    msg.className='msg error';
+    msg.textContent='Link inválido ou expirado. Solicite um novo link de ativação.';
+    button.style.display='none';
+    return;
+  }
+  button.disabled=false;
+
+  document.getElementById('toggle-pw').addEventListener('click',function(){
+    var inp=document.getElementById('password');
+    var isPw=inp.type==='password';
+    inp.type=isPw?'text':'password';
+    this.textContent=isPw?'🙈':'👁';
+  });
+  document.getElementById('toggle-pw2').addEventListener('click',function(){
+    var inp=document.getElementById('confirmPassword');
+    var isPw=inp.type==='password';
+    inp.type=isPw?'text':'password';
+    this.textContent=isPw?'🙈':'👁';
+  });
+
+  function getStrength(pw){
+    var s=0;
+    if(pw.length>=6)s++;
+    if(pw.length>=10)s++;
+    if(/[A-Z]/.test(pw))s++;
+    if(/[0-9]/.test(pw))s++;
+    if(/[^A-Za-z0-9]/.test(pw))s++;
+    return s;
+  }
+
+  password.addEventListener('input',function(){
+    var s=getStrength(this.value);
+    var colors=['#dc2626','#f59e0b','#f59e0b','#22c55e','#22c55e'];
+    var labels=['Fraca','Razoável','Razoável','Forte','Muito forte'];
+    var widths=['20%','40%','60%','80%','100%'];
+    if(this.value.length===0){strengthBar.style.width='0';pwHint.textContent='';}
+    else{strengthBar.style.width=widths[s];strengthBar.style.background=colors[s];pwHint.textContent='Força: '+labels[s];pwHint.style.color=colors[s];}
+    if(confirm.value&&this.value!==confirm.value)confirm.style.borderColor='#dc2626';
+    else if(confirm.value)confirm.style.borderColor='#22c55e';
+  });
+
+  confirm.addEventListener('input',function(){
+    if(this.value&&password.value!==this.value)this.style.borderColor='#dc2626';
+    else if(this.value)this.style.borderColor='#22c55e';
+    else this.style.borderColor='';
+  });
+
+  button.addEventListener('click',ativarConta);
+  document.addEventListener('keydown',function(e){if(e.key==='Enter'&&!button.disabled)ativarConta();});
+
+  async function ativarConta(){
+    var pw=password.value,pwConfirm=confirm.value;
+    if(!pw||!pwConfirm){msg.className='msg error';msg.textContent='Preencha todos os campos.';return;}
+    if(pw.length<6){msg.className='msg error';msg.textContent='A senha deve ter no mínimo 6 caracteres.';return;}
+    if(pw!==pwConfirm){msg.className='msg error';msg.textContent='As senhas não coincidem.';return;}
+    try{
+      button.disabled=true;
+      button.innerHTML='<span class="spinner"></span> Ativando...';
+      msg.className='msg';msg.textContent='';
+      var response=await fetch(API_BASE+'/auth/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,password:pw})});
+      if(response.ok){
+        msg.className='msg success';msg.textContent='Conta ativada com sucesso! Redirecionando para o login...';
+        password.value='';confirm.value='';
+        setTimeout(function(){window.location.href='login.html';},2500);
+      }else{
+        var errMsg='Token inválido ou expirado.';
+        try{var body=await response.json();if(body.message)errMsg=body.message;}catch(e){}
+        msg.className='msg error';msg.textContent=errMsg;
+        button.disabled=false;button.textContent='Ativar Conta';
+      }
+    }catch(e){
+      msg.className='msg error';msg.textContent='Erro ao conectar com o servidor. Tente novamente.';
+      button.disabled=false;button.textContent='Ativar Conta';
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

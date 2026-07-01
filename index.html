@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema OS — Gestão que funciona de verdade</title>
+<meta name="description" content="Sistema completo para marcenarias, marmorarias, vidraçarias e serralherias. Orçamentos, estoque, projetos e financeiro em um só lugar. Teste 7 dias grátis.">
+<meta property="og:title" content="Sistema OS — Gestão para quem trabalha com as mãos">
+<meta property="og:description" content="Orçamentos precisos, estoque controlado e projetos acompanhados. Feito para marcenarias, marmorarias, vidraçarias e serralherias.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1b2d4a;--navy2:#243859;--navy3:#0f1d30;--gold:#b8762a;--gold2:#d4932f;--gold3:#e8b84b;--chalk:#f0ece4;--muted:#8a9bb0;--border:rgba(184,118,42,0.18);--r:12px;--green:#22c55e;--green2:#16a34a;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy3);color:var(--chalk);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}html{scroll-behavior:auto;}}
+
+.logo-mark{display:inline-flex;align-items:baseline;gap:.1em;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:-.02em;user-select:none;text-decoration:none;}
+.lm-s{color:var(--chalk);}
+.lm-o{color:var(--gold2);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;padding:0 3.5rem;display:flex;align-items:center;justify-content:space-between;transition:background .45s,box-shadow .45s;}
+nav.scrolled{background:rgba(15,29,48,.95);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 1px 0 rgba(184,118,42,.14);}
+.nav-center{display:flex;align-items:center;gap:.15rem;list-style:none;}
+.nav-center a{font-size:.8rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:rgba(240,236,228,.5);text-decoration:none;padding:.45rem .9rem;border-radius:6px;transition:color .2s,background .2s;}
+.nav-center a:hover{color:var(--chalk);background:rgba(255,255,255,.06);}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.nav-login{font-size:.8rem;font-weight:500;color:rgba(240,236,228,.6);text-decoration:none;padding:.45rem .9rem;border-radius:6px;transition:color .2s;}
+.nav-login:hover{color:var(--chalk);}
+.nav-cta{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff!important;background:var(--gold)!important;padding:.5rem 1.4rem!important;border-radius:50px!important;transition:background .25s,transform .2s!important;display:inline-block;}
+.nav-cta:hover{background:var(--gold2)!important;transform:translateY(-1px);}
+.hamburger{display:none;cursor:pointer;color:var(--chalk);font-size:1.4rem;background:none;border:none;}
+
+#ambient-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 3.5rem;padding-top:66px;background:linear-gradient(160deg,var(--navy3) 0%,var(--navy) 55%,#1a2f48 100%);}
+.hero-rule{position:absolute;top:66px;left:3.5rem;right:3.5rem;height:1px;background:var(--border);z-index:2;}
+.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:5rem 0;}
+.hero-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;opacity:0;animation:rise .7s .1s forwards;}
+.ey-line{width:28px;height:1px;background:var(--gold);} .ey-text{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.6rem,4.5vw,4.4rem);font-weight:800;line-height:1.08;letter-spacing:-.035em;color:var(--chalk);opacity:0;animation:rise .8s .25s forwards;}
+.hero h1 .accent{color:var(--gold2);font-style:italic;font-weight:300;display:block;letter-spacing:-.02em;}
+.hero-body{margin-top:1.8rem;font-size:1rem;font-weight:300;line-height:1.8;color:var(--muted);max-width:430px;opacity:0;animation:rise .8s .4s forwards;}
+.hero-actions{display:flex;gap:1rem;margin-top:2.5rem;align-items:center;flex-wrap:wrap;opacity:0;animation:rise .8s .55s forwards;}
+.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#fff;padding:.88rem 2rem;border-radius:50px;font-size:.875rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;transition:background .25s,transform .25s,box-shadow .25s;box-shadow:0 8px 28px rgba(184,118,42,.28);}
+.btn-p:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 14px 36px rgba(184,118,42,.38);}
+.btn-g{display:inline-flex;align-items:center;gap:.45rem;color:rgba(240,236,228,.55);font-size:.875rem;font-weight:500;text-decoration:none;transition:color .2s;}
+.btn-g:hover{color:var(--chalk);}
+.btn-g svg{transition:transform .2s;} .btn-g:hover svg{transform:translateX(3px);}
+.hero-trust{display:flex;gap:2.5rem;margin-top:3.5rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .8s .7s forwards;flex-wrap:wrap;}
+.tn{font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;color:var(--chalk);line-height:1;letter-spacing:-.03em;}
+.tn em{color:var(--gold2);font-style:normal;} .tl{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+
+.hero-mockup{position:relative;opacity:0;animation:riseCard .9s .4s forwards;}
+.mockup-shell{background:#f0f2f5;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04);position:relative;}
+.m-chrome{height:22px;background:#d0d3d8;display:flex;align-items:center;padding:0 .6rem;gap:.35rem;}
+.m-dot{width:9px;height:9px;border-radius:50%;}
+.m-dot:nth-child(1){background:#ff5f57} .m-dot:nth-child(2){background:#febc2e} .m-dot:nth-child(3){background:#28c840}
+
+.m-nav{background:#1b2d4a;height:38px;display:flex;align-items:center;padding:0 .8rem;gap:.25rem;position:relative;z-index:10;}
+.m-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:700;color:#fff;margin-right:.4rem;white-space:nowrap;}
+.m-logo em{color:var(--gold2);font-style:normal;}
+.m-menu-item{position:relative;}
+.m-menu-btn{font-size:.6rem;color:rgba(255,255,255,.65);padding:.3rem .42rem;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:.18rem;white-space:nowrap;transition:background .15s,color .15s;user-select:none;border:none;background:none;font-family:'DM Sans',sans-serif;}
+.m-menu-btn:hover,.m-menu-btn.open{background:rgba(255,255,255,.12);color:#fff;}
+.m-caret{font-size:.42rem;opacity:.6;}
+.m-dropdown{position:absolute;top:calc(100% + 2px);left:0;background:#1e3554;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.3rem 0;min-width:145px;box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;z-index:60;}
+.m-dropdown.open{display:block;}
+.m-dd-item{display:flex;align-items:center;gap:.45rem;padding:.38rem .8rem;font-size:.58rem;color:rgba(255,255,255,.65);cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.m-dd-item:hover{background:rgba(255,255,255,.09);color:#fff;}
+.m-dd-sep{height:1px;background:rgba(255,255,255,.08);margin:.22rem 0;}
+.m-nav-right{margin-left:auto;display:flex;align-items:center;gap:.3rem;}
+.m-nav-btn{font-size:.56rem;color:rgba(255,255,255,.5);padding:.22rem .45rem;cursor:pointer;border-radius:4px;transition:background .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.m-nav-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+.m-tabs{background:#e8ebef;border-bottom:1px solid #d0d3d8;display:flex;align-items:center;padding:.28rem .55rem;gap:.3rem;}
+.m-tab{font-size:.56rem;background:#fff;border:1px solid #c8cbd0;border-radius:4px 4px 0 0;padding:.22rem .65rem;color:#1b2d4a;display:flex;align-items:center;gap:.28rem;font-family:'DM Sans',sans-serif;}
+
+.m-body{display:flex;height:310px;overflow:hidden;}
+.m-side{width:66px;background:#fff;border-right:1px solid #dde0e5;display:flex;flex-direction:column;align-items:center;padding:.5rem 0;gap:.02rem;flex-shrink:0;}
+.m-icon{width:58px;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.4rem .2rem;border-radius:6px;cursor:pointer;transition:background .15s;}
+.m-icon:hover{background:#f0f2f5;}
+.m-icon.active{background:#e0e8f5;}
+.m-icon .ico{font-size:1rem;}
+.m-icon .lbl{font-size:.46rem;color:#6b7d96;text-align:center;line-height:1.2;font-family:'DM Sans',sans-serif;}
+.m-icon.active .lbl{color:#1b2d4a;font-weight:600;}
+
+.m-main{flex:1;background:#f4f6f9;overflow:hidden;position:relative;}
+.m-screen{position:absolute;inset:0;overflow-y:auto;padding:.9rem;display:none;flex-direction:column;gap:.7rem;}
+.m-screen.active{display:flex;}
+
+.m-statusbar{background:#e0e3e8;border-top:1px solid #d0d3d8;padding:.22rem .7rem;display:flex;gap:1.5rem;}
+.m-sb{font-size:.48rem;color:#7a8494;font-family:'DM Sans',sans-serif;}
+
+.m-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.55rem;}
+.m-card{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.mc-lbl{font-size:.5rem;color:#8a9bb0;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Sans',sans-serif;}
+.mc-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.1rem;font-weight:700;color:#1b2d4a;margin-top:.18rem;}
+.mc-sub{font-size:.5rem;margin-top:.13rem;font-family:'DM Sans',sans-serif;}
+.mc-sub.g{color:#3da668;} .mc-sub.a{color:#b8762a;} .mc-sub.r{color:#e05252;}
+.m-chart-wrap{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.m-chart-title{font-size:.5rem;color:#8a9bb0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;font-family:'DM Sans',sans-serif;}
+.m-bars{display:flex;align-items:flex-end;gap:.26rem;height:40px;}
+.m-bar{flex:1;border-radius:3px 3px 0 0;background:#e8edf2;transition:height .7s cubic-bezier(.4,0,.2,1);}
+.m-bar.hi{background:#1b2d4a;} .m-bar.ac{background:var(--gold);}
+.m-proj-list{background:#fff;border-radius:7px;padding:.7rem;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.mp-row{display:flex;align-items:center;gap:.5rem;padding:.26rem 0;border-bottom:1px solid #f4f6f9;}
+.mp-row:last-child{border-bottom:none;}
+.mp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.mp-dot.g{background:#3da668;} .mp-dot.a{background:#b8762a;} .mp-dot.b{background:#4a9fba;}
+.mp-name{font-size:.52rem;font-family:'DM Sans',sans-serif;color:#1b2d4a;flex:1;}
+.mp-st{font-size:.5rem;font-family:'DM Sans',sans-serif;color:#8a9bb0;white-space:nowrap;}
+
+.m-table-wrap{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.m-table-header{padding:.6rem .8rem;background:#1b2d4a;display:flex;align-items:center;justify-content:space-between;}
+.m-table-title{font-size:.58rem;font-weight:600;color:#fff;font-family:'DM Sans',sans-serif;}
+.m-table-btn{font-size:.52rem;background:var(--gold);color:#fff;border:none;border-radius:4px;padding:.22rem .55rem;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.m-search{display:flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-bottom:1px solid #eee;background:#fafafa;}
+.m-search-input{flex:1;font-size:.52rem;border:1px solid #ddd;border-radius:4px;padding:.22rem .45rem;font-family:'DM Sans',sans-serif;color:#333;outline:none;}
+.m-table{width:100%;border-collapse:collapse;}
+.m-table th{font-size:.48rem;font-weight:600;color:#8a9bb0;text-transform:uppercase;letter-spacing:.05em;padding:.4rem .6rem;text-align:left;border-bottom:1px solid #eee;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.m-table td{font-size:.52rem;color:#1b2d4a;padding:.38rem .6rem;border-bottom:1px solid #f5f7fa;font-family:'DM Sans',sans-serif;}
+.m-table tr:hover td{background:#f9fafb;}
+.badge{display:inline-block;font-size:.46rem;font-weight:600;padding:.18rem .45rem;border-radius:50px;font-family:'DM Sans',sans-serif;}
+.badge.g{background:#e8f8f0;color:#3da668;} .badge.a{background:#fff5e6;color:#b8762a;} .badge.r{background:#fef0f0;color:#e05252;} .badge.b{background:#e8f4fb;color:#4a9fba;}
+
+.sec{padding:7rem 3.5rem;} .w{max-width:1200px;margin:0 auto;}
+.sec-tag{display:inline-flex;align-items:center;gap:.6rem;font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--gold);}
+.sec-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:800;line-height:1.1;color:var(--chalk);letter-spacing:-.035em;}
+.sec-title .light{font-weight:300;letter-spacing:-.02em;}
+.sec-sub{margin-top:1rem;font-size:.95rem;font-weight:300;line-height:1.8;color:var(--muted);max-width:480px;}
+
+.features-sec{background:var(--navy);position:relative;overflow:hidden;}
+.feat-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem;gap:3rem;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;}
+.feat{background:var(--navy);padding:2.2rem 2rem;position:relative;overflow:hidden;transition:background .3s;}
+.feat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.feat:hover{background:rgba(184,118,42,.05);} .feat:hover::after{transform:scaleX(1);}
+.feat-n{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(184,118,42,1);line-height:1;margin-bottom:.8rem;letter-spacing:-.04em;}
+.feat-ico{font-size:1.5rem;margin-bottom:1rem;}
+.feat h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:var(--chalk);margin-bottom:.55rem;letter-spacing:-.01em;}
+.feat p{font-size:.855rem;font-weight:300;color:var(--muted);line-height:1.75;}
+
+.seg-sec{background:var(--navy3);}
+.seg-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;margin-top:3.5rem;}
+.seg-card{background:var(--navy3);padding:2.5rem 1.8rem;cursor:pointer;position:relative;transition:background .35s;}
+.seg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.seg-card:hover{background:rgba(184,118,42,.05);}
+.seg-card:hover::before,.seg-card.active::before{transform:scaleX(1);}
+.seg-card.active{background:rgba(184,118,42,.07);}
+.seg-ico{font-size:1.8rem;margin-bottom:.8rem;}
+.seg-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;color:var(--chalk);margin-bottom:.5rem;letter-spacing:-.01em;}
+.seg-desc{font-size:.82rem;color:var(--muted);font-weight:300;line-height:1.6;}
+.seg-arr{margin-top:.9rem;font-size:.78rem;color:var(--gold);opacity:0;transform:translateX(-4px);transition:opacity .3s,transform .3s;}
+.seg-card:hover .seg-arr,.seg-card.active .seg-arr{opacity:1;transform:none;}
+
+.testi-sec{background:var(--navy);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);overflow:hidden;margin-top:3.5rem;}
+.testi{background:var(--navy);padding:2.2rem 2rem;transition:background .3s;}
+.testi:hover{background:rgba(184,118,42,.04);}
+.testi-stars{color:var(--gold);font-size:.8rem;letter-spacing:3px;margin-bottom:1.2rem;}
+.testi-quote{font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:300;font-style:italic;color:var(--chalk);line-height:1.7;margin-bottom:1.8rem;}
+.testi-author{display:flex;align-items:center;gap:.9rem;}
+.testi-av-outer{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--navy2),var(--gold));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:600;color:var(--chalk);}
+.testi-name{font-size:.85rem;font-weight:600;color:var(--chalk);}
+.testi-role{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
+
+.pricing-sec{background:var(--navy3);}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3.5rem;align-items:start;}
+.plan{border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:2.5rem;position:relative;overflow:hidden;transition:border-color .3s,transform .35s;background:var(--navy);}
+.plan:hover{border-color:rgba(184,118,42,.3);transform:translateY(-4px);}
+.plan.featured{border-color:var(--gold);background:linear-gradient(160deg,rgba(184,118,42,.08) 0%,var(--navy) 55%);box-shadow:0 0 60px rgba(184,118,42,.08);}
+.plan.featured:hover{transform:translateY(-4px);}
+.plan::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,118,42,.4),transparent);}
+.plan-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.25rem .7rem;border-radius:50px;}
+.plan-name{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;}
+.plan-price{font-family:'Plus Jakarta Sans',sans-serif;font-size:2.8rem;font-weight:800;color:var(--chalk);line-height:1;letter-spacing:-.04em;}
+.plan.featured .plan-price{color:var(--gold2);}
+.plan-period{font-size:.75rem;color:var(--muted);margin-top:.4rem;margin-bottom:2rem;}
+.plan-cta{display:block;width:100%;padding:.85rem;border-radius:50px;text-align:center;font-size:.82rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:all .25s;margin-bottom:2rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.plan-cta.solid{background:var(--gold);color:#fff;box-shadow:0 6px 24px rgba(184,118,42,.25);}
+.plan-cta.solid:hover{background:var(--gold2);transform:translateY(-2px);}
+.plan-cta.outline{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);}
+.plan-cta.outline:hover{border-color:var(--gold);color:var(--gold);}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:.75rem;}
+.plan-feats li{display:flex;align-items:flex-start;gap:.7rem;font-size:.855rem;font-weight:300;color:var(--muted);line-height:1.5;}
+.plan-feats li::before{content:'';width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:.15rem;border:1px solid var(--gold);background:rgba(184,118,42,.1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5 3.5-4' stroke='%23b8762a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/10px no-repeat;}
+.plan.featured .plan-feats li{color:rgba(240,236,228,.7);}
+
+.cta-sec{padding:8rem 3.5rem;text-align:center;background:var(--navy);position:relative;overflow:hidden;}
+.cta-sec::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(184,118,42,.07) 0%,transparent 70%);}
+.cta-sec::after{content:'';position:absolute;top:0;left:3.5rem;right:3.5rem;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.cta-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.4rem,5vw,4.2rem);font-weight:800;line-height:1.05;color:var(--chalk);letter-spacing:-.04em;margin-bottom:1.2rem;}
+.cta-title .accent{color:var(--gold2);font-weight:300;font-style:italic;}
+.cta-sub{font-size:.95rem;color:var(--muted);font-weight:300;margin-bottom:2.5rem;}
+
+.faq-sec{background:var(--navy3);}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:3.5rem;}
+.faq-item{background:var(--navy);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:1.5rem 1.8rem;transition:border-color .3s;}
+.faq-item:hover{border-color:rgba(184,118,42,.2);}
+.faq-q{font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--chalk);margin-bottom:.6rem;}
+.faq-a{font-size:.855rem;color:var(--muted);line-height:1.7;font-weight:300;}
+
+.contact-sec{background:var(--navy);}
+.contact-inner{max-width:600px;margin:0 auto;text-align:center;}
+.contact-sec .sec-tag{justify-content:center;}
+.contact-sec .sec-title{text-align:center;}
+.contact-sec .sec-sub{margin:1rem auto 0;text-align:center;}
+.contact-channels{display:flex;justify-content:center;gap:2rem;margin-top:3rem;flex-wrap:wrap;}
+.contact-ch{display:flex;align-items:center;gap:.7rem;padding:1rem 1.8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);text-decoration:none;color:var(--chalk);transition:border-color .3s,background .3s;}
+.contact-ch:hover{border-color:var(--gold);background:rgba(184,118,42,.05);}
+.contact-ch-ico{font-size:1.3rem;}
+.contact-ch-text strong{display:block;font-size:.7rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;}
+.contact-ch-text span{font-size:.875rem;color:var(--chalk);}
+
+footer{padding:2.5rem 3.5rem;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;background:var(--navy3);}
+.foot-links{display:flex;gap:1.8rem;flex-wrap:wrap;}
+.foot-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .2s;}
+.foot-links a:hover{color:var(--chalk);}
+.foot-copy{font-size:.75rem;color:rgba(107,125,150,.45);}
+
+.mob-menu{position:fixed;inset:0;z-index:300;background:rgba(15,29,48,.97);backdrop-filter:blur(24px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.mob-menu.open{opacity:1;pointer-events:all;}
+.mob-menu a{font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;color:var(--chalk);text-decoration:none;transition:color .2s;letter-spacing:-.03em;}
+.mob-menu a:hover{color:var(--gold2);}
+.mob-close{position:absolute;top:1.5rem;right:2rem;font-size:1.8rem;color:var(--muted);cursor:pointer;background:none;border:none;}
+
+.r{opacity:0;transform:translateY(20px);transition:opacity .75s ease,transform .75s ease;}
+.r.on{opacity:1;transform:none;}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes riseCard{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
+
+@media(max-width:1024px){.hero-inner{grid-template-columns:1fr;}.hero-mockup{display:none;}.feat-header{flex-direction:column;align-items:flex-start;}.features-grid{grid-template-columns:repeat(2,1fr);}.testi-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto;}.faq-grid{grid-template-columns:1fr;}.seg-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){nav{padding:0 1.5rem;}.nav-center{display:none;}.hamburger{display:block;}.hero,.sec,.cta-sec{padding-left:1.5rem;padding-right:1.5rem;}.hero{padding-top:66px;}.hero-inner{padding:3rem 0;}.features-grid{grid-template-columns:1fr;}footer{flex-direction:column;align-items:flex-start;padding:2rem 1.5rem;}.contact-channels{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+
+<canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+<div class="mob-menu" id="mob-menu">
+  <button class="mob-close" id="mob-close" aria-label="Fechar menu">✕</button>
+  <a href="#features" class="mob-link">Funcionalidades</a>
+  <a href="#pricing" class="mob-link">Planos</a>
+  <a href="#faq" class="mob-link">Dúvidas</a>
+  <a href="login.html" class="mob-link">Entrar</a>
+</div>
+
+<nav id="nav">
+  <a href="#hero" class="logo-mark"><span class="lm-s">Sistema </span><span class="lm-o">O$</span></a>
+  <ul class="nav-center">
+    <li><a href="#features">Funcionalidades</a></li>
+    <li><a href="#pricing">Planos</a></li>
+    <li><a href="#faq">Dúvidas</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="nav-login">Entrar</a>
+    <a href="#pricing" class="nav-cta">Começar grátis</a>
+  </div>
+  <button class="hamburger" id="ham" aria-label="Menu">☰</button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="hero">
+  <div class="hero-rule"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="ey-line"></span><span class="ey-text">Gestão para quem trabalha com as mãos</span></div>
+      <h1>O sistema que<br>sua empresa<br><span class="accent">merece ter.</span></h1>
+      <p class="hero-body">Orçamentos precisos, estoque controlado e projetos acompanhados — tudo em um só lugar. Feito para marcenarias, marmorarias, vidraçarias e serralherias.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-p">Começar grátis agora <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#features" class="btn-g">Ver funcionalidades <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="hero-trust">
+        <div><div class="tn">7<em>*</em></div><div class="tl">Dias grátis, sem cartão</div></div>
+        <div><div class="tn">35<em>%</em></div><div class="tl">Menos tempo em orçamentos</div></div>
+        <div><div class="tn">100<em>%</em></div><div class="tl">Online, qualquer dispositivo</div></div>
+      </div>
+      <p style="font-size:.65rem;color:rgba(107,125,150,.4);margin-top:.8rem;">*Sem necessidade de cartão de crédito.</p>
+    </div>
+
+    <!-- MOCKUP -->
+    <div class="hero-mockup">
+      <div class="mockup-shell">
+        <div class="m-chrome"><div class="m-dot"></div><div class="m-dot"></div><div class="m-dot"></div></div>
+        <div class="m-nav">
+          <span class="m-logo">Sistema <em>O$</em></span>
+          <div class="m-menu-item"><button class="m-menu-btn" data-menu="cadastro">📋 Cadastro <span class="m-caret">▾</span></button>
+            <div class="m-dropdown" id="dd-cadastro"><div class="m-dd-item">👤 Clientes</div><div class="m-dd-item">🏭 Fornecedores</div><div class="m-dd-item">📦 Produtos</div><div class="m-dd-sep"></div><div class="m-dd-item">👷 Funcionários</div></div>
+          </div>
+          <div class="m-menu-item"><button class="m-menu-btn" data-menu="venda">💰 Vendas <span class="m-caret">▾</span></button>
+            <div class="m-dropdown" id="dd-venda"><div class="m-dd-item">📋 Ordens de Serviço</div><div class="m-dd-item">💼 Orçamentos</div><div class="m-dd-sep"></div><div class="m-dd-item">📊 Financeiro</div></div>
+          </div>
+          <div class="m-menu-item"><button class="m-menu-btn" data-menu="estoque">📦 Estoque <span class="m-caret">▾</span></button>
+            <div class="m-dropdown" id="dd-estoque"><div class="m-dd-item">📋 Inventário</div><div class="m-dd-item">🔔 Alertas</div><div class="m-dd-sep"></div><div class="m-dd-item">📥 Entradas</div><div class="m-dd-item">📤 Saídas</div></div>
+          </div>
+          <div class="m-menu-item"><button class="m-menu-btn" data-menu="relatorios">📈 Relatórios <span class="m-caret">▾</span></button>
+            <div class="m-dropdown" id="dd-relatorios"><div class="m-dd-item">💰 Financeiro</div><div class="m-dd-item">📊 Produção</div><div class="m-dd-item">👥 Clientes</div></div>
+          </div>
+          <div class="m-nav-right"><div class="m-nav-btn">⚙ Config</div><div class="m-nav-btn">↩ Sair</div></div>
+        </div>
+        <div class="m-tabs"><div class="m-tab" id="active-tab-label">🏠 Dashboard</div></div>
+        <div class="m-body">
+          <div class="m-side">
+            <div class="m-icon active" data-screen="home" title="Dashboard"><span class="ico">🏠</span><span class="lbl">Dashboard</span></div>
+            <div class="m-icon" data-screen="os" title="Ordens de Serviço"><span class="ico">📋</span><span class="lbl">OS</span></div>
+            <div class="m-icon" data-screen="orcamento" title="Orçamentos"><span class="ico">💼</span><span class="lbl">Orçamento</span></div>
+            <div class="m-icon" data-screen="clientes" title="Clientes"><span class="ico">👥</span><span class="lbl">Clientes</span></div>
+            <div class="m-icon" data-screen="estoque" title="Estoque"><span class="ico">📦</span><span class="lbl">Estoque</span></div>
+            <div class="m-icon" data-screen="agenda" title="Agenda"><span class="ico">📅</span><span class="lbl">Agenda</span></div>
+            <div class="m-icon" data-screen="relatorios" title="Relatórios"><span class="ico">📈</span><span class="lbl">Relatórios</span></div>
+          </div>
+          <div class="m-main">
+            <!-- HOME -->
+            <div class="m-screen active" id="screen-home">
+              <div class="m-row3">
+                <div class="m-card"><div class="mc-lbl">Faturamento</div><div class="mc-val">R$ 48k</div><div class="mc-sub g">↑ +12% este mês</div></div>
+                <div class="m-card"><div class="mc-lbl">OS Abertas</div><div class="mc-val">24</div><div class="mc-sub a">3 atrasadas</div></div>
+                <div class="m-card"><div class="mc-lbl">Orçamentos</div><div class="mc-val">7</div><div class="mc-sub g">Hoje</div></div>
+              </div>
+              <div class="m-chart-wrap">
+                <div class="m-chart-title">Receita — 7 meses</div>
+                <div class="m-bars" id="m-bars">
+                  <div class="m-bar" data-h="50%"></div><div class="m-bar hi" data-h="65%"></div>
+                  <div class="m-bar" data-h="42%"></div><div class="m-bar hi" data-h="78%"></div>
+                  <div class="m-bar" data-h="60%"></div><div class="m-bar hi" data-h="85%"></div>
+                  <div class="m-bar ac" data-h="100%"></div>
+                </div>
+              </div>
+              <div class="m-proj-list">
+                <div class="mc-lbl" style="padding:.0 0 .4rem">Projetos recentes</div>
+                <div class="mp-row"><div class="mp-dot g"></div><span class="mp-name">Cozinha planejada — Silva</span><span class="mp-st">Em produção</span></div>
+                <div class="mp-row"><div class="mp-dot a"></div><span class="mp-name">Bancada granito — Oliveira</span><span class="mp-st">Aguardando</span></div>
+                <div class="mp-row"><div class="mp-dot b"></div><span class="mp-name">Fachada vidro — Gomes</span><span class="mp-st">Instalação</span></div>
+              </div>
+            </div>
+            <!-- OS -->
+            <div class="m-screen" id="screen-os">
+              <div class="m-table-wrap">
+                <div class="m-table-header"><span class="m-table-title">📋 Ordens de Serviço</span><button class="m-table-btn">+ Nova OS</button></div>
+                <div class="m-search"><input class="m-search-input" placeholder="🔍  Buscar OS..."><span style="font-size:.52rem;color:#aaa;font-family:'DM Sans',sans-serif;">48 registros</span></div>
+                <table class="m-table">
+                  <thead><tr><th>OS #</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>#2025-089</td><td>Carlos Silva</td><td>Cozinha planejada</td><td>R$ 4.200</td><td><span class="badge g">Em produção</span></td></tr>
+                    <tr><td>#2025-088</td><td>Ana Oliveira</td><td>Bancada granito</td><td>R$ 2.800</td><td><span class="badge a">Aguardando</span></td></tr>
+                    <tr><td>#2025-087</td><td>Roberto Gomes</td><td>Fachada vidro</td><td>R$ 7.500</td><td><span class="badge b">Instalação</span></td></tr>
+                    <tr><td>#2025-086</td><td>Marcos Ferreira</td><td>Portão automático</td><td>R$ 3.100</td><td><span class="badge g">Concluído</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- ORÇAMENTO -->
+            <div class="m-screen" id="screen-orcamento">
+              <div class="m-table-wrap">
+                <div class="m-table-header"><span class="m-table-title">💼 Orçamentos</span><button class="m-table-btn">+ Novo Orçamento</button></div>
+                <table class="m-table">
+                  <thead><tr><th>OS #</th><th>Cliente</th><th>Valor</th><th>Prazo</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>#2025-091</td><td>Juliana Pereira</td><td>R$ 3.600</td><td>30/04</td><td><span class="badge a">Pendente</span></td></tr>
+                    <tr><td>#2025-090</td><td>Paulo Mendes</td><td>R$ 1.900</td><td>28/04</td><td><span class="badge g">Aprovado</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- CLIENTES -->
+            <div class="m-screen" id="screen-clientes">
+              <div class="m-table-wrap">
+                <div class="m-table-header"><span class="m-table-title">👥 Clientes</span><button class="m-table-btn">+ Novo Cliente</button></div>
+                <div class="m-search"><input class="m-search-input" placeholder="🔍  Buscar cliente..."><span style="font-size:.52rem;color:#aaa;font-family:'DM Sans',sans-serif;">128 registros</span></div>
+                <table class="m-table">
+                  <thead><tr><th>Nome</th><th>Telefone</th><th>Cidade</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>Carlos Silva</td><td>(11) 99999-1234</td><td>São Paulo</td><td><span class="badge g">Ativo</span></td></tr>
+                    <tr><td>Ana Oliveira</td><td>(11) 98888-5678</td><td>Guarulhos</td><td><span class="badge g">Ativo</span></td></tr>
+                    <tr><td>Roberto Gomes</td><td>(11) 97777-9012</td><td>Osasco</td><td><span class="badge a">Negociação</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- ESTOQUE -->
+            <div class="m-screen" id="screen-estoque">
+              <div class="m-row3">
+                <div class="m-card"><div class="mc-lbl">Itens</div><div class="mc-val">342</div><div class="mc-sub g">Cadastrados</div></div>
+                <div class="m-card"><div class="mc-lbl">Estoque Baixo</div><div class="mc-val">12</div><div class="mc-sub r">Reposição urgente</div></div>
+                <div class="m-card"><div class="mc-lbl">Valor Total</div><div class="mc-val">R$ 89k</div><div class="mc-sub g">Em estoque</div></div>
+              </div>
+              <div class="m-table-wrap">
+                <div class="m-table-header"><span class="m-table-title">📦 Estoque</span><button class="m-table-btn">+ Novo Item</button></div>
+                <table class="m-table">
+                  <thead><tr><th>Produto</th><th>Qtd</th><th>Un.</th><th>Valor Unit.</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>MDF 15mm Branco</td><td>45</td><td>chapa</td><td>R$ 120,00</td><td><span class="badge g">Normal</span></td></tr>
+                    <tr><td>Dobradiças Blum</td><td>8</td><td>un</td><td>R$ 18,50</td><td><span class="badge r">Baixo</span></td></tr>
+                    <tr><td>Ferro 3/8</td><td>120</td><td>barra</td><td>R$ 35,00</td><td><span class="badge g">Normal</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- AGENDA -->
+            <div class="m-screen" id="screen-agenda">
+              <div class="m-table-wrap">
+                <div class="m-table-header"><span class="m-table-title">📅 Agenda — Abril 2025</span><button class="m-table-btn">+ Novo Evento</button></div>
+                <table class="m-table">
+                  <thead><tr><th>Data</th><th>Hora</th><th>Evento</th><th>Cliente</th><th>Tipo</th></tr></thead>
+                  <tbody>
+                    <tr><td>10/04</td><td>09:00</td><td>Medição</td><td>Gomes</td><td><span class="badge b">Visita</span></td></tr>
+                    <tr><td>12/04</td><td>14:00</td><td>Entrega</td><td>Silva</td><td><span class="badge g">Entrega</span></td></tr>
+                    <tr><td>15/04</td><td>10:00</td><td>Instalação</td><td>Pereira</td><td><span class="badge a">Serviço</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- RELATÓRIOS -->
+            <div class="m-screen" id="screen-relatorios">
+              <div class="m-row3">
+                <div class="m-card"><div class="mc-lbl">Receita Mensal</div><div class="mc-val">R$ 48.200</div><div class="mc-sub g">↑ 12% vs mês anterior</div></div>
+                <div class="m-card"><div class="mc-lbl">OS Concluídas</div><div class="mc-val">18</div><div class="mc-sub g">Este mês</div></div>
+                <div class="m-card"><div class="mc-lbl">Ticket Médio</div><div class="mc-val">R$ 2.680</div><div class="mc-sub a">↓ 3% vs anterior</div></div>
+              </div>
+              <div class="m-chart-wrap">
+                <div class="m-chart-title">Receita mensal — 2025</div>
+                <div class="m-bars">
+                  <div class="m-bar" data-h="45%"></div><div class="m-bar hi" data-h="62%"></div>
+                  <div class="m-bar ac" data-h="88%"></div><div class="m-bar" data-h="70%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="m-statusbar">
+          <span class="m-sb">PTech Solutions [PRO]</span>
+          <span class="m-sb">v2.0.9</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec features-sec" id="features">
+  <div class="w">
+    <div class="feat-header r"><div><div class="sec-tag">Funcionalidades</div><h2 class="sec-title">Tudo que você precisa<br><span class="light">em um único sistema.</span></h2></div><p class="sec-sub">Sem planilhas, sem caderneta. Controle total da sua empresa a partir de qualquer dispositivo.</p></div>
+    <div class="features-grid r" style="transition-delay:.12s">
+      <div class="feat"><div class="feat-n">01</div><div class="feat-ico">📋</div><h3>Ordens de Serviço</h3><p>Crie, acompanhe e conclua OS do início ao fim. Prazos, valores e status sempre visíveis.</p></div>
+      <div class="feat"><div class="feat-n">02</div><div class="feat-ico">📦</div><h3>Estoque inteligente</h3><p>Inventário em tempo real com alertas de reposição. Nunca mais pare uma obra por falta de material.</p></div>
+      <div class="feat"><div class="feat-n">03</div><div class="feat-ico">💼</div><h3>Orçamentos em segundos</h3><p>Calcule materiais e mão de obra automaticamente. Envie PDFs profissionais e feche mais negócios.</p></div>
+      <div class="feat"><div class="feat-n">04</div><div class="feat-ico">📈</div><h3>Relatórios claros</h3><p>Faturamento, ticket médio, performance da equipe. Dados que ajudam a decidir.</p></div>
+      <div class="feat"><div class="feat-n">05</div><div class="feat-ico">💰</div><h3>Financeiro descomplicado</h3><p>Contas a pagar e receber, fluxo de caixa. Saiba exatamente para onde vai cada centavo.</p></div>
+      <div class="feat"><div class="feat-n">06</div><div class="feat-ico">👥</div><h3>Gestão de clientes</h3><p>Histórico completo, projetos anteriores e preferências. Relacionamentos que geram indicações.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SEGMENTOS -->
+<section class="sec seg-sec" id="segmentos">
+  <div class="w">
+    <div class="r"><div class="sec-tag">Segmentos</div><h2 class="sec-title">Feito para o seu negócio,<br><span class="light">não para qualquer negócio.</span></h2></div>
+    <div class="seg-row r" style="transition-delay:.12s">
+      <div class="seg-card active"><div class="seg-ico">🪵</div><div class="seg-name">Marcenaria</div><div class="seg-desc">Gerencie cortes, chapas, ferragens e entrega de móveis com precisão milimétrica.</div><div class="seg-arr">Saiba mais →</div></div>
+      <div class="seg-card"><div class="seg-ico">🪨</div><div class="seg-name">Marmoraria</div><div class="seg-desc">Controle chapas de pedra, polimento e entrega de bancadas com total organização.</div><div class="seg-arr">Saiba mais →</div></div>
+      <div class="seg-card"><div class="seg-ico">🔷</div><div class="seg-name">Vidraçaria</div><div class="seg-desc">Gerencie temperados, laminados e medições de obra em tempo real.</div><div class="seg-arr">Saiba mais →</div></div>
+      <div class="seg-card"><div class="seg-ico">⚙️</div><div class="seg-name">Serralheria</div><div class="seg-desc">Tubos, perfis, portões e grades. Controle total para a sua serralheria.</div><div class="seg-arr">Saiba mais →</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="sec testi-sec" id="depoimentos">
+  <div class="w">
+    <div class="r"><div class="sec-tag">Depoimentos</div><h2 class="sec-title">O que dizem quem<br><span class="light">já usa todo dia.</span></h2></div>
+    <div class="testi-grid r" style="transition-delay:.12s">
+      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Reduzimos em 35% o tempo de elaboração de orçamentos. Os erros de cálculo praticamente sumiram."</p><div class="testi-author"><div class="testi-av-outer">CS</div><div><div class="testi-name">Carlos Silva</div><div class="testi-role">Marcenaria Silva &amp; Filhos</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"O controle de estoque eliminou o desperdício de material. Agora sei exatamente o que tenho e o que preciso repor."</p><div class="testi-author"><div class="testi-av-outer">AO</div><div><div class="testi-name">Ana Oliveira</div><div class="testi-role">Vidraçaria Cristal</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><p class="testi-quote">"Fechei 3 contratos a mais esse mês por causa da agilidade nos orçamentos. O cliente recebe o PDF na hora."</p><div class="testi-author"><div class="testi-av-outer">MF</div><div><div class="testi-name">Marcos Ferreira</div><div class="testi-role">Marmoraria Premium</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec pricing-sec" id="pricing">
+  <div class="w">
+    <div class="r"><div class="sec-tag">Planos</div><h2 class="sec-title">Investimento simples.<br><span class="light">Resultado real.</span></h2><p class="sec-sub">Sem taxa de adesão. Sem fidelidade. Cancele quando quiser. Suporte humano incluso.</p></div>
+    <div class="pricing-grid r" style="transition-delay:.12s">
+      <div class="plan">
+        <div class="plan-name">Básico</div>
+        <div class="plan-price">R$ 199</div>
+        <div class="plan-period">/mês · para começar a crescer</div>
+        <a href="#pricing" class="plan-cta outline" onclick="startTrial('basico')">Começar grátis</a>
+        <ul class="plan-feats">
+          <li>Ordens de serviço ilimitadas</li>
+          <li>Controle de estoque</li>
+          <li>Orçamentos com PDF</li>
+          <li>Gestão de clientes</li>
+          <li>Até 2 usuários</li>
+          <li>Suporte por e-mail</li>
+        </ul>
+      </div>
+      <div class="plan featured">
+        <span class="plan-badge">Mais popular</span>
+        <div class="plan-name">Profissional</div>
+        <div class="plan-price">R$ 349</div>
+        <div class="plan-period">/mês · para quem quer crescer de verdade</div>
+        <a href="#pricing" class="plan-cta solid" onclick="startTrial('profissional')">Começar grátis</a>
+        <ul class="plan-feats">
+          <li>Tudo do plano Básico</li>
+          <li>Gestão financeira completa</li>
+          <li>Acompanhamento de projetos</li>
+          <li>Relatórios avançados</li>
+          <li>Até 5 usuários</li>
+          <li>Suporte prioritário via WhatsApp</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Empresarial</div>
+        <div class="plan-price">R$ 599</div>
+        <div class="plan-period">/mês · para operações grandes</div>
+        <a href="#pricing" class="plan-cta outline" onclick="startTrial('empresarial')">Falar com vendas</a>
+        <ul class="plan-feats">
+          <li>Tudo do plano Profissional</li>
+          <li>Usuários ilimitados</li>
+          <li>Multi-filial</li>
+          <li>Integrações personalizadas</li>
+          <li>Gerente de conta dedicado</li>
+          <li>Treinamento para equipe</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div style="max-width:700px;margin:0 auto;position:relative;z-index:1;" class="r">
+    <div class="sec-tag" style="justify-content:center;margin-bottom:1.5rem">7 dias grátis, sem cartão</div>
+    <h2 class="cta-title">Sua empresa merece<br><span class="accent">funcionar bem.</span></h2>
+    <p class="cta-sub">Comece agora e veja a diferença em menos de uma semana.</p>
+    <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
+      <a href="#pricing" class="btn-p" style="font-size:.9rem;padding:1rem 2.5rem">Começar grátis agora</a>
+      <a href="#contact" class="btn-g" style="font-size:.9rem;padding:1rem 1.5rem;">Falar com vendas <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec faq-sec" id="faq">
+  <div class="w">
+    <div class="r" style="text-align:center;"><div class="sec-tag" style="justify-content:center;">Dúvidas frequentes</div><h2 class="sec-title">Perguntas e respostas</h2></div>
+    <div class="faq-grid r" style="transition-delay:.12s">
+      <div class="faq-item"><div class="faq-q">Preciso de cartão de crédito para testar?</div><div class="faq-a">Não. O teste gratuito de 7 dias não precisa de cartão. Você cria a conta, ativa pelo email e já começa a usar.</div></div>
+      <div class="faq-item"><div class="faq-q">Posso cancelar quando quiser?</div><div class="faq-a">Sim. Sem multa, sem fidelidade. Cancele pelo painel ou fale com nosso suporte.</div></div>
+      <div class="faq-item"><div class="faq-q">Funciona no celular?</div><div class="faq-a">O sistema é desktop (Windows/Mac/Linux). Estamos desenvolvendo o app mobile para acesso em campo.</div></div>
+      <div class="faq-item"><div class="faq-q">Meus dados estão seguros?</div><div class="faq-a">Sim. Criptografia em repouso e trânsito, backups diários e conformidade com LGPD.</div></div>
+      <div class="faq-item"><div class="faq-q">Posso mudar de plano depois?</div><div class="faq-a">Sim. Você pode fazer upgrade ou downgrade a qualquer momento. O valor é proporcional.</div></div>
+      <div class="faq-item"><div class="faq-q">Há limite de ordens de serviço?</div><div class="faq-a">Não. Todos os planos incluem OS ilimitadas. A diferença está nos módulos e usuários.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO (enterprise) -->
+<section class="sec contact-sec" id="contact">
+  <div class="w">
+    <div class="contact-inner r">
+      <div class="sec-tag">Contato</div>
+      <h2 class="sec-title">Precisa de algo<br><span class="light">personalizado?</span></h2>
+      <p class="sec-sub" style="margin:1rem auto 0;">Para empresas com necessidades específicas, multi-filial ou integrações, fale diretamente com nossa equipe de vendas.</p>
+      <div class="contact-channels">
+        <a href="mailto:contato@sistemaos.com.br" class="contact-ch">
+          <span class="contact-ch-ico">📧</span>
+          <div class="contact-ch-text"><strong>E-mail</strong><span>contato@sistemaos.com.br</span></div>
+        </a>
+        <a href="https://wa.me/5511999999999" target="_blank" class="contact-ch">
+          <span class="contact-ch-ico">💬</span>
+          <div class="contact-ch-text"><strong>WhatsApp</strong><span>(11) 9 9999-9999</span></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="#hero" class="logo-mark" style="font-size:1.1rem;"><span class="lm-s">Sistema </span><span class="lm-o">O$</span></a>
+  <div class="foot-links"><a href="#features">Funcionalidades</a><a href="#pricing">Planos</a><a href="#faq">Dúvidas</a><a href="#contact">Contato</a><a href="#">Privacidade</a><a href="#">Termos</a></div>
+  <span class="foot-copy">© 2026 PTech Solutions · Sistema OS</span>
+</footer>
+
+<script>
+(function(){
+  const cv=document.getElementById('ambient-canvas'),cx=cv.getContext('2d');let W,H;
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;};resize();window.addEventListener('resize',resize);
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function hex(x,y,r){cx.beginPath();for(let i=0;i<6;i++){const a=(Math.PI/3)*i-Math.PI/6;i?cx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a)):cx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a));}cx.closePath();}
+  function gear(x,y,r,n,angle){cx.save();cx.translate(x,y);cx.rotate(angle);const ir=r*.6,th=r*.28;cx.beginPath();for(let i=0;i<n;i++){const a0=(Math.PI*2/n)*i,a1=a0+Math.PI/n*.55,a2=a0+Math.PI/n*1.45,a3=a0+Math.PI*2/n;cx.lineTo((r+th)*Math.cos(a0),(r+th)*Math.sin(a0));cx.lineTo((r+th)*Math.cos(a1),(r+th)*Math.sin(a1));cx.lineTo(r*Math.cos(a2),r*Math.sin(a2));cx.lineTo(r*Math.cos(a3),r*Math.sin(a3));}cx.closePath();cx.stroke();cx.beginPath();cx.arc(0,0,ir,0,Math.PI*2);cx.stroke();cx.beginPath();cx.arc(0,0,r*.2,0,Math.PI*2);cx.stroke();cx.restore();}
+  function ruler(x,y,w,angle){cx.save();cx.translate(x,y);cx.rotate(angle);cx.beginPath();cx.moveTo(-w/2,0);cx.lineTo(w/2,0);cx.stroke();for(let i=0;i<=10;i++){const tx=-w/2+(w/10)*i,th=i%5===0?8:4;cx.beginPath();cx.moveTo(tx,0);cx.lineTo(tx,-th);cx.stroke();}cx.restore();}
+  function saw(x,y,w,angle){cx.save();cx.translate(x,y);cx.rotate(angle);const n=14,s=w/n;cx.beginPath();cx.moveTo(-w/2,0);for(let i=0;i<n;i++){const bx=-w/2+s*i;cx.lineTo(bx+s*.5,-7);cx.lineTo(bx+s,0);}cx.stroke();cx.restore();}
+  function vein(x,y,len,angle){cx.save();cx.translate(x,y);cx.rotate(angle);cx.beginPath();cx.moveTo(-len/2,0);cx.bezierCurveTo(-len/4,-10,len/4,10,len/2,0);cx.stroke();cx.restore();}
+  function shard(x,y,r,angle){cx.save();cx.translate(x,y);cx.rotate(angle);cx.beginPath();cx.moveTo(0,-r);cx.lineTo(r*.86,r*.5);cx.lineTo(-r*.86,r*.5);cx.closePath();cx.stroke();cx.beginPath();cx.moveTo(0,-r*.5);cx.lineTo(r*.35,r*.22);cx.stroke();cx.restore();}
+  const TYPES=['hex','gear','ruler','saw','vein','shard'];
+  const mk=()=>({type:TYPES[Math.floor(Math.random()*TYPES.length)],x:Math.random()*innerWidth,y:Math.random()*innerHeight,size:22+Math.random()*42,angle:Math.random()*Math.PI*2,aspd:(Math.random()-.5)*.004,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,alpha:.12+Math.random()*.18,phase:Math.random()*Math.PI*2,pspd:.3+Math.random()*.4});
+  const pts=Array.from({length:32},mk);let t=0;
+  function frame(){t+=.016;cx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.angle+=p.aspd;if(p.x<-80)p.x=W+80;if(p.x>W+80)p.x=-80;if(p.y<-80)p.y=H+80;if(p.y>H+80)p.y=-80;const a=p.alpha*(.65+.35*Math.sin(t*p.pspd+p.phase));cx.strokeStyle=`rgba(184,118,42,${a})`;cx.lineWidth=1.1;switch(p.type){case'hex':hex(p.x,p.y,p.size);cx.stroke();break;case'gear':gear(p.x,p.y,p.size*.55,8,p.angle);break;case'ruler':ruler(p.x,p.y,p.size*2.2,p.angle);break;case'saw':saw(p.x,p.y,p.size*2,p.angle);break;case'vein':vein(p.x,p.y,p.size*2,p.angle);break;case'shard':shard(p.x,p.y,p.size*.7,p.angle);break;}});requestAnimationFrame(frame);}
+  frame();
+})();
+
+/* MOCKUP */
+const screenLabels={home:'🏠 Dashboard',os:'📋 Ordens de Serviço',orcamento:'💼 Orçamentos',clientes:'👥 Clientes',estoque:'📦 Estoque',agenda:'📅 Agenda',relatorios:'📈 Relatórios'};
+document.querySelectorAll('.m-icon').forEach(icon=>{icon.addEventListener('click',()=>{const s=icon.dataset.screen;document.querySelectorAll('.m-icon').forEach(i=>i.classList.remove('active'));icon.classList.add('active');document.querySelectorAll('.m-screen').forEach(x=>x.classList.remove('active'));document.getElementById('screen-'+s).classList.add('active');document.getElementById('active-tab-label').textContent=screenLabels[s];});});
+document.querySelectorAll('.m-menu-btn').forEach(btn=>{btn.addEventListener('click',e=>{e.stopPropagation();const k=btn.dataset.menu,dd=document.getElementById('dd-'+k),open=dd.classList.contains('open');document.querySelectorAll('.m-dropdown').forEach(d=>d.classList.remove('open'));document.querySelectorAll('.m-menu-btn').forEach(b=>b.classList.remove('open'));if(!open){dd.classList.add('open');btn.classList.add('open');}});});
+document.addEventListener('click',()=>{document.querySelectorAll('.m-dropdown').forEach(d=>d.classList.remove('open'));document.querySelectorAll('.m-menu-btn').forEach(b=>b.classList.remove('open'));});
+document.querySelectorAll('.m-bar').forEach((b,i)=>{const h=b.dataset.h;b.style.height='0';setTimeout(()=>b.style.height=h,1000+i*100);});
+
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>40));
+document.getElementById('ham').addEventListener('click',()=>document.getElementById('mob-menu').classList.add('open'));
+document.getElementById('mob-close').addEventListener('click',()=>document.getElementById('mob-menu').classList.remove('open'));
+document.querySelectorAll('.mob-link').forEach(a=>a.addEventListener('click',()=>document.getElementById('mob-menu').classList.remove('open')));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');}),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+document.querySelectorAll('.seg-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.seg-card').forEach(x=>x.classList.remove('active'));c.classList.add('active');}));
+
+/* TRIAL */
+function startTrial(plan){
+  localStorage.setItem('selected_plan',plan);
+  window.location.href='pre-register.html';
+}
+</script>
+</body>
+</html>

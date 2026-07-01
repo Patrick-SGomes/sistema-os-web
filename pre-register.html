@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criar Conta - Sistema OS</title>
+<meta name="description" content="Crie sua conta gratuita do Sistema OS. Teste 7 dias sem cartão.">
+<style>
+:root{--navy:#1b2d4a;--navy2:#243859;--navy3:#0f1d30;--gold:#b8762a;--gold2:#d4932f;--chalk:#f0ece4;--muted:#8a9bb0;--green:#22c55e;--green2:#16a34a;--red:#dc2626;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:var(--navy3);color:var(--chalk);display:flex;min-height:100vh;}
+
+.left{flex:1;background:linear-gradient(160deg,var(--navy3) 0%,var(--navy) 55%,#1a2f48 100%);display:flex;flex-direction:column;justify-content:center;padding:4rem;position:relative;overflow:hidden;}
+.left::before{content:'';position:absolute;top:50%;left:50%;width:500px;height:500px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(184,118,42,.08) 0%,transparent 70%);pointer-events:none;}
+.left-content{position:relative;z-index:1;max-width:480px;}
+.left .logo{display:inline-flex;align-items:baseline;gap:.1em;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.6rem;letter-spacing:-.02em;text-decoration:none;margin-bottom:3rem;}
+.left .logo span{color:var(--chalk);} .left .logo em{color:var(--gold2);font-style:normal;}
+.left h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.035em;margin-bottom:1.2rem;}
+.left h1 .accent{color:var(--gold2);font-style:italic;font-weight:300;display:block;}
+.left p{font-size:1rem;color:var(--muted);line-height:1.8;font-weight:300;margin-bottom:2.5rem;}
+.steps{display:flex;flex-direction:column;gap:1.5rem;}
+.step{display:flex;align-items:flex-start;gap:.8rem;}
+.step-num{width:32px;height:32px;border-radius:50%;background:rgba(184,118,42,.1);border:1px solid rgba(184,118,42,.25);display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:700;color:var(--gold2);flex-shrink:0;}
+.step-text strong{display:block;font-size:.85rem;color:var(--chalk);margin-bottom:.1rem;}
+.step-text span{font-size:.8rem;color:var(--muted);line-height:1.4;}
+
+.right{width:520px;display:flex;align-items:center;justify-content:center;padding:3rem;position:relative;overflow-y:auto;}
+.right::before{content:'';position:absolute;top:0;bottom:0;left:0;width:1px;background:linear-gradient(180deg,transparent,rgba(184,118,42,.2),transparent);}
+
+.card{width:100%;max-width:400px;}
+.card h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:.3rem;}
+.card .subtitle{font-size:.85rem;color:var(--muted);margin-bottom:1.8rem;}
+
+.plan-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;background:rgba(184,118,42,.1);border:1px solid rgba(184,118,42,.25);border-radius:50px;font-size:.75rem;color:var(--gold2);font-weight:600;margin-bottom:1.5rem;}
+.plan-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold2);}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.field{margin-bottom:.9rem;text-align:left;}
+.field label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;}
+.field input,.field select{width:100%;padding:.7rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--chalk);font-size:.85rem;font-family:inherit;transition:border-color .2s,background .2s;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--gold);background:rgba(184,118,42,.05);}
+.field input::placeholder{color:rgba(138,155,176,.5);}
+.field select{cursor:pointer;}
+.field select option{background:var(--navy);color:var(--chalk);}
+
+.terms{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:1.2rem;}
+.terms a{color:var(--gold);text-decoration:none;}
+.terms a:hover{text-decoration:underline;}
+
+.btn{width:100%;padding:.85rem;background:var(--gold);border:none;color:#fff;font-weight:700;font-size:.875rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:50px;transition:background .25s,transform .2s,box-shadow .25s;font-family:inherit;}
+.btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(184,118,42,.25);}
+.btn:disabled{background:#64748b;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.msg{margin-top:1rem;font-size:.85rem;min-height:1.4rem;line-height:1.4;text-align:center;}
+.msg.error{color:var(--red);}
+.msg.success{color:var(--green);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:1rem;}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:.4rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.login-link{margin-top:1.5rem;font-size:.85rem;color:var(--muted);text-align:center;}
+.login-link a{color:var(--gold);text-decoration:none;font-weight:600;transition:color .2s;}
+.login-link a:hover{color:var(--gold2);}
+
+@media(max-width:900px){.left{display:none;}.right{width:100%;padding:2rem;}.right::before{display:none;}}
+@media(max-width:480px){.right{padding:1.5rem;}.form-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="left">
+  <div class="left-content">
+    <a href="index.html" class="logo"><span>Sistema </span><em>O$</em></a>
+    <h1>Comece<br><span class="accent">grátis hoje.</span></h1>
+    <p>Crie sua conta em 2 minutos. Sem cartão de crédito. Cancele quando quiser.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Preencha seus dados</strong><span>Nome, empresa e e-mail. Rápido e simples.</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Confirme pelo e-mail</strong><span>Enviamos um link de ativation na sua caixa de entrada.</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Crie sua senha e comece</strong><span>Ative sua conta e comece a usar agora mesmo.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="card">
+    <h2>Criar sua conta</h2>
+    <p class="subtitle">Teste grátis por 7 dias. Sem cartão.</p>
+
+    <div class="plan-badge" id="plan-badge" style="display:none;">
+      <span class="dot"></span>
+      <span id="plan-name">Plano selecionado</span>
+    </div>
+
+    <form id="register-form">
+      <div class="form-row">
+        <div class="field">
+          <label for="name">Nome completo</label>
+          <input type="text" id="name" placeholder="Seu nome" required>
+        </div>
+        <div class="field">
+          <label for="company">Empresa</label>
+          <input type="text" id="company" placeholder="Nome da empresa" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">E-mail corporativo</label>
+        <input type="email" id="email" placeholder="seu@empresa.com" required autocomplete="email">
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="whatsapp">WhatsApp</label>
+          <input type="tel" id="whatsapp" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="field">
+          <label for="segment">Segmento</label>
+          <select id="segment" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="marcenaria">Marcenaria</option>
+            <option value="marmoraria">Marmoraria</option>
+            <option value="vidracaria">Vidraçaria</option>
+            <option value="serralheria">Serralheria</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="terms">
+        Ao criar sua conta, você concorda com nossos <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a>.
+      </div>
+
+      <button type="submit" class="btn" id="btn">Criar conta gratuita</button>
+
+      <div class="msg" id="msg" aria-live="polite"></div>
+    </form>
+
+    <div class="login-link">
+      Já tem conta? <a href="login.html">Entrar</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var API_BASE=localStorage.getItem('api_base')||window.location.origin;
+  var form=document.getElementById('register-form');
+  var btn=document.getElementById('btn');
+  var msg=document.getElementById('msg');
+
+  // show selected plan from localStorage
+  var selectedPlan=localStorage.getItem('selected_plan');
+  if(selectedPlan){
+    var planNames={basico:'Plano Básico — R$ 199/mês',profissional:'Plano Profissional — R$ 349/mês',empresarial:'Plano Empresarial — R$ 599/mês'};
+    document.getElementById('plan-name').textContent=planNames[selectedPlan]||selectedPlan;
+    document.getElementById('plan-badge').style.display='inline-flex';
+  }
+
+  // phone mask
+  var phone=document.getElementById('whatsapp');
+  phone.addEventListener('input',function(){
+    var v=this.value.replace(/\D/g,'');
+    if(v.length<=11)v=v.replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');
+    this.value=v;
+  });
+
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();
+    var name=document.getElementById('name').value.trim();
+    var company=document.getElementById('company').value.trim();
+    var email=document.getElementById('email').value.trim();
+    var whatsapp=document.getElementById('whatsapp').value.trim();
+    var segment=document.getElementById('segment').value;
+
+    if(!name||!company||!email||!whatsapp||!segment){
+      msg.className='msg error';msg.textContent='Preencha todos os campos.';return;
+    }
+    if(!email.includes('@')){
+      msg.className='msg error';msg.textContent='E-mail inválido.';return;
+    }
+
+    try{
+      btn.disabled=true;
+      btn.innerHTML='<span class="spinner"></span> Criando conta...';
+      msg.className='msg';msg.textContent='';
+
+      var response=await fetch(API_BASE+'/auth/pre-register',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          name:name,
+          companyName:company,
+          email:email,
+          whatsapp:whatsapp,
+          businessType:segment,
+          plan:selectedPlan||'profissional'
+        })
+      });
+
+      if(response.ok){
+        msg.className='msg success';
+        msg.innerHTML='<strong>Conta criada!</strong><br>Verifique seu e-mail para ativar sua conta. O link expira em 24 horas.';
+        form.reset();
+        btn.disabled=false;
+        btn.textContent='Criar conta gratuita';
+      }else{
+        var errMsg='Erro ao criar conta. Tente novamente.';
+        try{var body=await response.json();if(body.message)errMsg=body.message;}catch(ex){}
+        msg.className='msg error';msg.textContent=errMsg;
+        btn.disabled=false;btn.textContent='Criar conta gratuita';
+      }
+    }catch(ex){
+      msg.className='msg error';msg.textContent='Erro ao conectar com o servidor. Tente novamente.';
+      btn.disabled=false;btn.textContent='Criar conta gratuita';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
